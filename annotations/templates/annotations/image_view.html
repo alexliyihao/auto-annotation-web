@@ -7,6 +7,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
   </head>
   <body>
+    <div class='title'>
+      <h1>Imageview: {{image.image_name}}</h1>
+      <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
+    </div>
+    <div></div>
     <!-- the div openseadragon1 will take over the whole page -->
     <div id="openseadragon-div"></div>
     <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>

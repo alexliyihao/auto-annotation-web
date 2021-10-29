@@ -8,6 +8,10 @@ class User(models.Model):
     username = models.CharField(max_length = 40)
     # The password
     password = models.CharField(max_length = 40)
+    # The legal Name
+    legal_name = models.CharField(max_length = 40)
+    # UNI
+    UNI = models.CharField(max_length = 8)
     # User's email
     email = models.EmailField()
     # The date user registered
@@ -25,7 +29,7 @@ class Organization(models.Model):
     organization_name = models.CharField(max_length = 40)
     # The supervisor of the organization
     supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null = True)
-    
+
     def __str__(self):
       return self.organization_name
 
@@ -42,7 +46,7 @@ class ImageGroup(models.Model):
 
     def __str__(self):
       return self.group_name
- 
+
 class Image(models.Model):
     """
     The whole slide image identity
@@ -52,9 +56,9 @@ class Image(models.Model):
     # The date submitted
     submission_date = models.DateTimeField('date of submission')
     # The path of Aperio SVS file(original file)
-    svs_path = models.FilePathField(path = "~/svss", match = "*.svs")
+    svs_path = models.FilePathField(path = "/svss", match = ".*\.svs")
     # The path of Deep Zoom Image(dzi) file generated from svs file
-    dzi_path = models.FilePathField(path = "~/dzis", match = "*.dzi")
+    dzi_path = models.FilePathField(path = "/dzis", match = ".*\.dzi")
     # The height of the SVS file
     height = models.PositiveIntegerField()
     # The width of the SVS file
@@ -67,7 +71,7 @@ class Image(models.Model):
     group = models.ForeignKey(ImageGroup, on_delete=models.SET_NULL, null = True)
     # The user who submit this image
     submit_user = models.ForeignKey(User, on_delete=models.PROTECT)
-    
+
     def __str__(self):
        return self.image_name
 
@@ -83,6 +87,6 @@ class Annotation(models.Model):
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     # The user who submitted this annotation
     annotator = models.ForeignKey(User, on_delete=models.PROTECT)
-    
+
     def __str__(self):
        return f"{self.image}_{self.annotator}_{self.update_date}"

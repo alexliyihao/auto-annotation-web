@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
   </head>
 <body>
-  {% if latest_image_list %}
+  {% if image_list %}
     <!-- the title part -->
     <div class='title'>
       <h1>Image List</h1>
@@ -22,10 +22,10 @@
           <th>Submission Time</th>
         </tr>
         <!-- Each individual image will take a line -->
-        {% for image in latest_image_list %}
+        {% for image in image_list %}
           <tr>
             <!-- image name will link to the OpenSeadragon page -->
-            <td><a href="/annotations/imageviews/{{ image.id }}/">{{ image.image_name }}</a></td>
+            <td><a href="{% url 'annotations:imageviews' image.id %}">{{ image.image_name }}</a></td>
             <!-- TBF: the group page -->
             <td><a> {{ image.group }} </a></td>
             <!-- TBF: the user page -->
