@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
@@ -144,4 +145,3 @@ cython_debug/
 /local_test/
 
 .DS_Store
-/ml_core/.ipynb_checkpoints/
