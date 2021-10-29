@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Poll available</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+  </head>
+<body>
+{% if latest_image_list %}
+    <div class="title">
+    <h1>The latest image list</h1>
+    </div>
+    <div class="questions">
+    <ul>
+    {% for image in latest_image_list %}
+     <li><a href="/annotations/{{ image.id }}/">{{ image.image_name }}</a></li>
+    {% endfor %}
+    </ul>
+    </div>
+{% else %}
+    <div class = "title">
+    <h1>No images are available.</h1>
+    </div>
+{% endif %}
+</body>
+</html>

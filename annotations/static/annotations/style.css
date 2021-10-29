@@ -1,0 +1,24 @@
+.title{
+  height: 50px;
+  color: skyblue;
+  background-color: lightblue;
+}
+
+.questions {
+  height: 500px;
+  background: skyblue url("images/background.gif") no-repeat;
+}
+
+h1{
+  color: white;
+  background-color:lightblue;
+  font-size: 3em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+li{
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5em;
+  text-indent: 2.5em;
+}

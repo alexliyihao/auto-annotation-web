@@ -1,0 +1,10 @@
+{% load static %}
+<div id="openseadragon1" style="width: 100%; height: 100%;"></div>
+<script src="{% static 'annotations/openseadragon/openseadragon.min.js' %}"></script>
+<script type="text/javascript">
+    var viewer = OpenSeadragon({
+        id: "openseadragon1",
+        prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
+        tileSources:[ "{{file_path}}/{{image.dzi_path}}"]
+    });
+</script>
