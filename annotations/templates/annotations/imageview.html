@@ -1,10 +1,22 @@
 {% load static %}
-<div id="openseadragon1" style="width: 100%; height: 100%;"></div>
-<script src="{% static 'annotations/openseadragon/openseadragon.min.js' %}"></script>
-<script type="text/javascript">
-    var viewer = OpenSeadragon({
-        id: "openseadragon1",
-        prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
-        tileSources:[ "{{file_path}}/{{image.dzi_path}}"]
-    });
-</script>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Imageview: {{image.image_name}} - AAAP</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+  </head>
+  <body>
+    <!-- the div openseadragon1 will take over the whole page -->
+    <div id="openseadragon-div"></div>
+    <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "openseadragon-div",
+            prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
+            //this tileSources is only for debugging mode -- to be corrected
+            tileSources:[ "{{file_path}}{{image.dzi_path}}"]
+        });
+    </script>
+  </body>
+</html>

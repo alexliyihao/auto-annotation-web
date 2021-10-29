@@ -1,24 +1,80 @@
+/* general title div */
 .title{
-  height: 50px;
-  color: skyblue;
+  height: 10%;
+  width: 100%;
+  background-color: lightblue;
+  align-items: center;
+  display:flex;
+  justify-content: flex-start;
+  position:fixed;
+  top:0px;
+  left:0px;
+}
+
+/* general titles */
+h1{
+  display: table-cell;
+  color: white;
+  text-align: left;
+  font-size: 2em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* general body background */
+.body_background{
+  position:fixed;
+  top:10%;
+  left:0px;
+  height: 100%;
+  width: 100%;
   background-color: lightblue;
 }
 
-.questions {
-  height: 500px;
-  background: skyblue url("images/background.gif") no-repeat;
+/* OpenSeadragon specific div */
+#openseadragon-div{
+  width: 100%;
+  height: 100%;
+  position:fixed;
+  top:0px;
+  left:0px;
 }
 
-h1{
-  color: white;
-  background-color:lightblue;
-  font-size: 3em;
+/* general table settings */
+table{
+  width:80%;
+  border-collapse:collapse;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+td, th{
+  text-align: left;
+  padding: 0.5em;
+  text-decoration: none;
+}
+
+a{
+  text-decoration: none;
+}
+a:link{
+  color:black;
+}
+a:visited{
+  color: black;
+}
+a:hover{
+  color: blue;
+}
+a:active{
+  color: white;
+}
+
+
+
 
 li{
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.5em;
   text-indent: 2.5em;
+  list-style: none;
 }

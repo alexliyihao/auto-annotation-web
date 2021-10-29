@@ -2,26 +2,44 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Poll available</title>
+    <title>Image List - AAAP</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
   </head>
 <body>
-{% if latest_image_list %}
-    <div class="title">
-    <h1>The latest image list</h1>
+  {% if latest_image_list %}
+    <!-- the title part -->
+    <div class='title'>
+      <h1>Image List</h1>
     </div>
-    <div class="questions">
-    <ul>
-    {% for image in latest_image_list %}
-     <li><a href="/annotations/{{ image.id }}/">{{ image.image_name }}</a></li>
-    {% endfor %}
-    </ul>
+    <!-- the body part -->
+    <div class='body_background'>
+      <table>
+        <tr>
+          <th>Image Name</th>
+          <th>Group</th>
+          <th>Submitter</th>
+          <th>Submission Time</th>
+        </tr>
+        <!-- Each individual image will take a line -->
+        {% for image in latest_image_list %}
+          <tr>
+            <!-- image name will link to the OpenSeadragon page -->
+            <td><a href="/annotations/imageviews/{{ image.id }}/">{{ image.image_name }}</a></td>
+            <!-- TBF: the group page -->
+            <td><a> {{ image.group }} </a></td>
+            <!-- TBF: the user page -->
+            <td><a> {{ image.submit_user }}</a></td>
+            <!-- TBF: a fliter(?) w.r.t. the date-->
+            <td><a> {{ image.submission_date }}</a></td>
+          </tr>
+        {% endfor %}
+      </table>
     </div>
-{% else %}
+  {% else %}
     <div class = "title">
-    <h1>No images are available.</h1>
+      <h1>No images are available.</h1>
     </div>
-{% endif %}
+  {% endif %}
 </body>
 </html>

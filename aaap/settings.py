@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-c7%(=i^e!(g698^u-4lk*)31-5711e$vlfw2c7un8%1q%90rl*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['34.85.216.250']
+ALLOWED_HOSTS = ['34.85.216.250','localhost']
 
 
 # Application definition
@@ -122,6 +122,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# This media folder is for debugging mode, to be corrected
 MEDIA_ROOT = FILES_DIR
 MEDIA_URL  = '/dzis/'
 
