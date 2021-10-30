@@ -21,17 +21,17 @@ class ImageListView(generic.ListView):
     # render the template
 #    return render(request, 'annotations/image_list.html', context)
 
-# def image_views(request, image_id):
-#     try:
-#         # find the Image by image_id, or throw a 404 error
-#         image = Image.objects.get(pk = image_id)
-#         #please be noticed that file_path is only for debugging purpose, to be corrected
-#         return render(request, 'annotations/image_view.html', {'image':image, 'file_path':'/dzis/'})
-#     except(KeyError, Image.DoesNotExist):
-#         return HttpResponseRedirect(reverse('annotations:imagelist'))
+def image_views(request, image_id):
+     try:
+         # find the Image by image_id, or throw a 404 error
+         image = Image.objects.get(pk = image_id)
+         #please be noticed that file_path is only for debugging purpose, to be corrected
+         return render(request, 'annotations/image_view.html', {'image':image, 'file_path':'/dzis/'})
+     except(KeyError, Image.DoesNotExist):
+         return HttpResponseRedirect(reverse('annotations:imagelist'))
 
 
 #Deprecated for image_view settings
-class ImageViewsView(generic.DetailView):
-   model = Image
-   template_name = 'annotations/image_view.html'
+#class ImageViewsView(generic.DetailView):
+#   model = Image
+#   template_name = 'annotations/image_view.html'

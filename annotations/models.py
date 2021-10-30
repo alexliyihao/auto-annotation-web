@@ -56,9 +56,9 @@ class Image(models.Model):
     # The date submitted
     submission_date = models.DateTimeField('date of submission')
     # The path of Aperio SVS file(original file)
-    svs_path = models.FilePathField(path = "/svss", match = ".*\.svs")
+    svs_path = models.FilePathField(path = "/home/alexliyihao/svss", match = ".*\.svs")
     # The path of Deep Zoom Image(dzi) file generated from svs file
-    dzi_path = models.FilePathField(path = "/dzis", match = ".*\.dzi")
+    dzi_path = models.FilePathField(path = "/home/alexliyihao/dzis", match = ".*\.dzi")
     # The height of the SVS file
     height = models.PositiveIntegerField()
     # The width of the SVS file
