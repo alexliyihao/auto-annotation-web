@@ -6,19 +6,23 @@
     <meta charset="utf-8">
     <title>Imageview: {{image.image_name}} - AAAP</title>
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+    <link rel="stylesheet" href="{% static 'annotations/annotorious.min.css' %}">
     <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>
+    <script src="{% static 'annotations/openseadragon-annotorious.min.js' %}"></script>
 </head>
 
 <body>
   <div class='title'>
     <h1>Imageview: {{image.image_name}}</h1>
     <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
-  </div>
-  <!-- the div openseadragon1 will take over the whole page -->
-  <div class="info" style="position: fixed; top: 0px; left:400px; width: 200px; height:200px">
+  <!-- this div is used for debugging, meanwhile tracking the mouse-->
+  <div class="info" style="position: fixed; top: 0px; left:400px; width: 800px; height:200px">
       <div class="position"></div>
-      <div class="zoom" style="margin-top: 3em;"></div>
+      <div class="zoom" style="margin-top: 1em;"></div>
   </div>
+  </div>
+
+  <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
   <!-- scripts -->
 
@@ -28,17 +32,26 @@
 
       var viewer = OpenSeadragon({
           id: "openseadragon-div",
+          showNavigator:  true,
           prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
           //this tileSources is only for debugging mode -- to be corrected
           tileSources:[ "{{file_path}}{{image.dzi_path}}"]
       });
+      const config = {
+          allowEmpty:false,
+          gigapixelMode:true,
+          widgets: [
+              'COMMENT'
+          ]
+      };
+      var anno = OpenSeadragon.Annotorious(viewer, config);
 
       var updateZoom = function() {
           var zoom = viewer.viewport.getZoom(true);
           var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
 
-          zoomEl.innerHTML = 'Zoom:<br>' + (Math.round(zoom * 100) / 100) +
-              '<br><br>Image Zoom:<br>' + (Math.round(imageZoom * 100) / 100);
+          zoomEl.innerHTML = 'Zoom:' + (Math.round(zoom * 100) / 100) +
+              ' Image Zoom:' + (Math.round(imageZoom * 100) / 100);
       }
 
       viewer.addHandler('open', function() {
@@ -52,9 +65,9 @@
                   var zoom = viewer.viewport.getZoom(true);
                   var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
 
-                  positionEl.innerHTML = 'Web:<br>' + webPoint.toString() +
-                      '<br><br>Viewport:<br>' + viewportPoint.toString() +
-                      '<br><br>Image:<br>' + imagePoint.toString();
+                  positionEl.innerHTML = 'Web:' + webPoint.toString() +
+                      ' Viewport:' + viewportPoint.toString() +
+                      ' Image:' + imagePoint.toString();
 
                   updateZoom();
               }
