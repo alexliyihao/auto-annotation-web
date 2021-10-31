@@ -1,27 +1,69 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Imageview: {{image.image_name}} - AAAP</title>
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
-  </head>
-  <body>
-    <div class='title'>
-      <h1>Imageview: {{image.image_name}}</h1>
-      <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
-    </div>
-    <div></div>
-    <!-- the div openseadragon1 will take over the whole page -->
-    <div id="openseadragon-div"></div>
     <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>
-    <script type="text/javascript">
-        var viewer = OpenSeadragon({
-            id: "openseadragon-div",
-            prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
-            //this tileSources is only for debugging mode -- to be corrected
-            tileSources:[ "{{file_path}}{{image.dzi_path}}"]
-        });
-    </script>
-  </body>
+</head>
+
+<body>
+  <div class='title'>
+    <h1>Imageview: {{image.image_name}}</h1>
+    <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
+  </div>
+  <!-- the div openseadragon1 will take over the whole page -->
+  <div class="info" style="position: fixed; top: 0px; left:400px; width: 200px; height:200px">
+      <div class="position"></div>
+      <div class="zoom" style="margin-top: 3em;"></div>
+  </div>
+  <div id="openseadragon-div"></div>
+  <!-- scripts -->
+
+  <script type="text/javascript">
+      var positionEl = document.querySelectorAll('.info .position')[0];
+      var zoomEl = document.querySelectorAll('.info .zoom')[0];
+
+      var viewer = OpenSeadragon({
+          id: "openseadragon-div",
+          prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
+          //this tileSources is only for debugging mode -- to be corrected
+          tileSources:[ "{{file_path}}{{image.dzi_path}}"]
+      });
+
+      var updateZoom = function() {
+          var zoom = viewer.viewport.getZoom(true);
+          var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
+
+          zoomEl.innerHTML = 'Zoom:<br>' + (Math.round(zoom * 100) / 100) +
+              '<br><br>Image Zoom:<br>' + (Math.round(imageZoom * 100) / 100);
+      }
+
+      viewer.addHandler('open', function() {
+
+          var tracker = new OpenSeadragon.MouseTracker({
+              element: viewer.container,
+              moveHandler: function(event) {
+                  var webPoint = event.position;
+                  var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+                  var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+                  var zoom = viewer.viewport.getZoom(true);
+                  var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
+
+                  positionEl.innerHTML = 'Web:<br>' + webPoint.toString() +
+                      '<br><br>Viewport:<br>' + viewportPoint.toString() +
+                      '<br><br>Image:<br>' + imagePoint.toString();
+
+                  updateZoom();
+              }
+          });
+
+          tracker.setTracking(true);
+
+          viewer.addHandler('animation', updateZoom);
+      });
+  </script>
+</body>
 </html>
