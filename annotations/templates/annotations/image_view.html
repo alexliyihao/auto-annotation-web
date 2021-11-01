@@ -5,9 +5,13 @@
 <head>
     <meta charset="utf-8">
     <title>Imageview: {{image.image_name}} - AAAP</title>
+    <!-- website css -->
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+    <!-- OpenSeaDragon Annotorious css -->
     <link rel="stylesheet" href="{% static 'annotations/annotorious.min.css' %}">
+    <!-- OpenSeaDragon -->
     <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>
+    <!-- OpenSeaDragon Annotorious JS -->
     <script src="{% static 'annotations/openseadragon-annotorious.min.js' %}"></script>
 </head>
 
@@ -27,9 +31,11 @@
   <!-- scripts -->
 
   <script type="text/javascript">
+      // For the coordinate display
       var positionEl = document.querySelectorAll('.info .position')[0];
       var zoomEl = document.querySelectorAll('.info .zoom')[0];
 
+      // Main OpenSeaDragon viewer
       var viewer = OpenSeadragon({
           id: "openseadragon-div",
           showNavigator:  true,
@@ -37,6 +43,8 @@
           //this tileSources is only for debugging mode -- to be corrected
           tileSources:[ "{{file_path}}{{image.dzi_path}}"]
       });
+
+      // OpenSeaDragon.Annotorious config
       const config = {
           allowEmpty:false,
           gigapixelMode:true,
@@ -44,8 +52,14 @@
               'COMMENT'
           ]
       };
+
+      //register the viewer and the configuration to Annotorious
       var anno = OpenSeadragon.Annotorious(viewer, config);
 
+      //set the drawing tool to polygon (rect doesn't make much sense here)
+      anno.setDrawingTool(toolName = 'polygon');
+
+      // The followings are the update function of coordinate tracing element
       var updateZoom = function() {
           var zoom = viewer.viewport.getZoom(true);
           var imageZoom = viewer.viewport.viewportToImageZoom(zoom);
