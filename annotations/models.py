@@ -1,25 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User as auth_user
 
-class User(models.Model):
+class User(auth_user):
     """
-    individual user entity
+    individual user entity, it inherits the username,
+    password, first name, last name, and email from django.contrib.auth.models.User
     """
-    # The name of the user
-    username = models.CharField(max_length = 40)
-    # The password
-    password = models.CharField(max_length = 40)
-    # The legal Name
-    legal_name = models.CharField(max_length = 40)
     # UNI
     UNI = models.CharField(max_length = 8)
-    # User's email
-    email = models.EmailField()
     # The date user registered
     register_date = models.DateTimeField('date of registration')
     # The organization this user belongs to
-    organizations = models.ForeignKey('Organization', on_delete=models.PROTECT)
+    organizations = models.ForeignKey('Organization', on_delete=models.PROTECT, null = True)
     def __str__(self):
-      return self.username
+      return f"{self.UNI} - {self.first_name} {self.last_name}"
 
 class Organization(models.Model):
     """

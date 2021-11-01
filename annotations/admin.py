@@ -3,7 +3,7 @@ from .models import User, Image, Annotation, Organization, ImageGroup
 
 class UserAdmin(admin.ModelAdmin):
     fields = [
-    "username", "password", "email",
+    "username", "password","UNI" , "email", "first_name", "last_name",
     "register_date", "organizations"
     ]
 admin.site.register(User, UserAdmin)

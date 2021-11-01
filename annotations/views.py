@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.conf import settings
-from .models import Image
+from .models import Image, User
 from django.views import generic
+from django.contrib.auth.forms import UserCreationForm
 
 
 class ImageListView(generic.ListView):
@@ -35,3 +36,12 @@ def image_views(request, image_id):
 #class ImageViewsView(generic.DetailView):
 #   model = Image
 #   template_name = 'annotations/image_view.html'
+
+class RegistrationView(generic.CreateView):
+    template_name = 'annotations/registration.html'
+    model = User
+    # TO BE FIXED -- Change into login when finished
+    success_url = reverse_lazy('imagelist')
+    fields = [
+        "username", "password","UNI" , "email", "first_name", "last_name", "organizations"
+        ]
