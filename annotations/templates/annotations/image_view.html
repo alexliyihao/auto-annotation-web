@@ -10,10 +10,13 @@
     <!-- OpenSeaDragon Annotorious css -->
     <link rel="stylesheet" href="{% static 'annotations/annotorious.min.css' %}">
     <!-- OpenSeaDragon -->
-    <script src="{% static 'annotations/openseadragon/openseadragon.js' %}"></script>
+    <script src="{% static 'annotations/openseadragon/openseadragon.min.js' %}"></script>
     <!-- OpenSeaDragon Annotorious JS -->
     <script src="{% static 'annotations/openseadragon-annotorious.min.js' %}"></script>
+    <!-- Annotorious Toolbar Plugin -->
+    <script src="{% static 'annotations/annotorious-toolbar.min.js' %}"></script>
 </head>
+
 
 <body>
   <div class='title'>
@@ -25,7 +28,7 @@
       <div class="zoom" style="margin-top: 1em;"></div>
   </div>
   </div>
-
+  <div id="annotorious-toolbar" style="position:fixed;top:10%"></div>
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
   <!-- scripts -->
@@ -58,6 +61,9 @@
 
       //set the drawing tool to polygon (rect doesn't make much sense here)
       anno.setDrawingTool(toolName = 'polygon');
+      
+      //add a toolbar to the openseadragon viewer
+      Annotorious.Toolbar(anno, document.getElementById('annotorious-toolbar'));
 
       // The followings are the update function of coordinate tracing element
       var updateZoom = function() {

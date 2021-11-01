@@ -32,9 +32,9 @@ h1{
 /* OpenSeadragon specific div */
 #openseadragon-div{
   width: 100%;
-  height: 90%;
+  height: 80%;
   position:fixed;
-  top:10%;
+  top:20%;
   left:0px;
 }
 
