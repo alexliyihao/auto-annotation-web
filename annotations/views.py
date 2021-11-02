@@ -45,6 +45,9 @@ def image_views(request, image_id):
 #   template_name = 'annotations/image_view.html'
 
 class RegistrationView(generic.edit.CreateView):
+    '''
+    The view for page registration, for the registration of users
+    '''
     template_name = 'annotations/registration.html'
     form_class = UserRegistrationForm
     success_url = reverse_lazy('annotations:regi-success')
@@ -55,4 +58,7 @@ class RegistrationView(generic.edit.CreateView):
         return super().form_valid(form)
 
 def registration_success_views(request):
+    '''
+    The view for page registration_success, for the success page of registration
+    '''
     return render(request, "annotations/registration_success.html")
