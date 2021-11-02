@@ -9,6 +9,9 @@ from .forms import UserRegistrationForm
 from datetime import datetime
 
 class ImageListView(generic.ListView):
+    '''
+    The view for page image_list, for a brief skimming over the image list
+    '''
     template_name = 'annotations/image_list.html'
     context_object_name = 'image_list'
 
@@ -24,6 +27,9 @@ class ImageListView(generic.ListView):
 #    return render(request, 'annotations/image_list.html', context)
 
 def image_views(request, image_id):
+    '''
+    The view for page image_view, for detailed annotations on a specific image
+    '''
      try:
          # find the Image by image_id, or throw a 404 error
          image = Image.objects.get(pk = image_id)
