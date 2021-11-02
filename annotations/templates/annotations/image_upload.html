@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Image Uploading - AAAP</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+  </head>
+<body>
+  <div class='title'>
+    <h1>Image Uploading</h1>
+  </div>
+  <div class="body_background">
+    <div class="Introduction">
+      <p>Please fill the following information about this new Whole Slide Image. </p>
+      <p>Please make sure that it's Aperio .svs format</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+  </div>
+
+</body>

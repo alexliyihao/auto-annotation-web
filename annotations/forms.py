@@ -1,5 +1,5 @@
 from django import forms
-from .models import Organization,User
+from .models import Organization, User, Image
 from datetime import datetime
 
 class UserRegistrationForm(forms.ModelForm):
@@ -9,3 +9,12 @@ class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password', 'first_name', 'last_name', 'email', 'UNI', 'organizations']
+
+
+class ImageUploadForm(forms.ModelForm):
+    """
+    The form for new user registration
+    """
+    class Meta:
+        model = Image
+        fields = ['image_name', 'image_description', 'image_upload']

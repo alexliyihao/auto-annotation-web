@@ -49,6 +49,10 @@ class Image(models.Model):
     image_name = models.CharField(max_length = 200)
     # The date submitted
     submission_date = models.DateTimeField('date of submission')
+    # The upload specific field for uploading
+    image_upload = models.FileField(upload_to = 'svss/')
+    # The upload specific field as traslating indicator
+    #translated = models.BooleanField(default= 'False')
     # The path of Aperio SVS file(original file)
     svs_path = models.FilePathField(path = "/home/alexliyihao/svss", match = ".*\.svs")
     # The path of Deep Zoom Image(dzi) file generated from svs file

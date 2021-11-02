@@ -5,7 +5,7 @@ from django.conf import settings
 from .models import Image, User
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, ImageUploadForm
 from datetime import datetime
 
 class ImageListView(generic.ListView):
@@ -36,7 +36,7 @@ def image_views(request, image_id):
          #please be noticed that file_path is only for debugging purpose, to be corrected
          return render(request, 'annotations/image_view.html', {'image':image, 'file_path':'/dzis/'})
      except(KeyError, Image.DoesNotExist):
-         return HttpResponseRedirect(reverse('annotations:imagelist'))
+         return HttpResponseRedirect(reverse('annotations:image-list'))
 
 
 #Deprecated for image_view settings
@@ -62,3 +62,31 @@ def registration_success_views(request):
     The view for page registration_success, for the success page of registration
     '''
     return render(request, "annotations/registration_success.html")
+
+def handle_uploaded_file(file, des_path):
+    """
+    helper function of image_uploading_views dealing with large svs files,
+    left here for checking
+    """
+    with open(def_path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+def image_upload_views(request):
+    '''
+    The view for page image_upload, for upload a new file
+    '''
+    if request.method == "POST":
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
+    else:
+        form = ImageUploadForm()
+    return render(request, 'annotations/upload_image.html', {'form': form})
+
+def image_upload_success_views(request):
+    '''
+    The view for page image_upload_success, for the success page of image uploading process
+    '''
+    return render(request, "annotations/image_upload_success.html")
