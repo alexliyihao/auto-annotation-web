@@ -9,9 +9,9 @@ class User(auth_user):
     # UNI
     UNI = models.CharField(max_length = 8)
     # The date user registered
-    register_date = models.DateTimeField('date of registration')
+    register_date = models.DateTimeField('date of registration', blank = True)
     # The organization this user belongs to
-    organizations = models.ForeignKey('Organization', on_delete=models.PROTECT, null = True)
+    organizations = models.ForeignKey('Organization', on_delete=models.PROTECT,null = True, blank = True)
     def __str__(self):
       return f"{self.UNI} - {self.first_name} {self.last_name}"
 
@@ -22,7 +22,7 @@ class Organization(models.Model):
     # The name of the organization
     organization_name = models.CharField(max_length = 40)
     # The supervisor of the organization
-    supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null = True)
+    supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank = True)
 
     def __str__(self):
       return self.organization_name
@@ -62,7 +62,7 @@ class Image(models.Model):
     # The boolean variable indicate if the image is fully annotated
     completely_annotated = models.BooleanField(default = 'False')
     # The group this image belongs to
-    group = models.ForeignKey(ImageGroup, on_delete=models.SET_NULL, null = True)
+    group = models.ForeignKey(ImageGroup, on_delete=models.SET_NULL, blank = True, null = True)
     # The user who submit this image
     submit_user = models.ForeignKey(User, on_delete=models.PROTECT)
 

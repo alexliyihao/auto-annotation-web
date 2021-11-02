@@ -5,7 +5,8 @@ from django.conf import settings
 from .models import Image, User
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
-
+from .forms import UserRegistrationForm
+from datetime import datetime
 
 class ImageListView(generic.ListView):
     template_name = 'annotations/image_list.html'
@@ -37,11 +38,15 @@ def image_views(request, image_id):
 #   model = Image
 #   template_name = 'annotations/image_view.html'
 
-class RegistrationView(generic.CreateView):
+class RegistrationView(generic.edit.CreateView):
     template_name = 'annotations/registration.html'
-    model = User
-    # TO BE FIXED -- Change into login when finished
-    success_url = reverse_lazy('imagelist')
-    fields = [
-        "username", "password","UNI" , "email", "first_name", "last_name", "organizations"
-        ]
+    form_class = UserRegistrationForm
+    success_url = reverse_lazy('annotations:regi-success')
+    def form_valid(self, form):
+        f = form.save(commit = False)
+        f.register_date = datetime.now()
+        f.save()
+        return super().form_valid(form)
+
+def registration_success_views(request):
+    return render(request, "annotations/registration_success.html")

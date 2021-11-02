@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Registration Success- AAAP</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+  </head>
+<body>
+  <div class='title'>
+    <h1>New User registration</h1>
+  </div>
+  <div class="body_background">
+    <div class="Introduction">
+      <p>You have successfully registered in the roster</p>
+      <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
+    </div>
+  </div>
+</body>
