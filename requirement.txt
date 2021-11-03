@@ -1,1 +1,5 @@
 django==3.2.8
+python==3.5
+python==3.9
+openslide-python==1.1.2
+libvips==8.11.4

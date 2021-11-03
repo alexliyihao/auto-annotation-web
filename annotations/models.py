@@ -39,6 +39,10 @@ class ImageGroup(models.Model):
     def __str__(self):
       return self.group_name
 
+
+def svs_rename(instance, filename):
+    return f"svss/{instance.image_name}.svs"
+
 class Image(models.Model):
     """
     The whole slide image identity
@@ -48,7 +52,7 @@ class Image(models.Model):
     # The date submitted
     submission_date = models.DateTimeField('date of submission')
     # The upload specific field for uploading
-    image_upload = models.FileField(upload_to = 'svss/')
+    image_upload = models.FileField(upload_to = svs_rename)
     # The upload specific field as traslating indicator
     translated = models.BooleanField(default= 'False')
     # The path of Aperio SVS file(original file)

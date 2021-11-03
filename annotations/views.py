@@ -7,6 +7,7 @@ from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm, ImageUploadForm
 from datetime import datetime
+import subprocess
 
 class ImageListView(generic.ListView):
     '''
@@ -81,15 +82,19 @@ def image_upload_views(request):
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             f = form.save(commit = False)
-            f.image_upload.upload_to = f"svss/{f.image_name}.svs"
             f.submission_date = datetime.now()
             f.svs_path = f"svss/{f.image_name}.svs"
             f.dzi_path = f"dzis/{f.image_name}.dzi"
-            f.height = 0
-            f.width = 0
+            run = subprocess.check_output([
+                                    "python3.5",
+                                    "../ext_script/dimensions.py", 
+                                    "../svss/test.svs"
+                                    ])
+            f.width, f.height = eval(run.decode("utf-8"))
             f.completely_annotated = False
             f.translated = False 
             f.save()
+            subprocess.run(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
             print(form.errors)
