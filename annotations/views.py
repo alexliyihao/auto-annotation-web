@@ -85,15 +85,20 @@ def image_upload_views(request):
             f.submission_date = datetime.now()
             f.svs_path = f"svss/{f.image_name}.svs"
             f.dzi_path = f"dzis/{f.image_name}.dzi"
-            run = subprocess.check_output([
+            # openslide has poor support with python3.5+, so run it from external scripts
+            dimensions = subprocess.check_output([
                                     "python3.5",
                                     "../ext_script/dimensions.py", 
                                     "../svss/test.svs"
                                     ])
-            f.width, f.height = eval(run.decode("utf-8"))
+            # interpret the result, the last character is newline character
+            f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
             f.completely_annotated = False
-            f.translated = False 
+	    # TBD: See the line below 
+            f.translated = True
             f.save()
+            # after the file is uploaded, run a translation procedure
+            # TBD: can we run it internally rather than on the page? It takes too long
             subprocess.run(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
