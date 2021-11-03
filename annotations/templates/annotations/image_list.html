@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Image List - AAAP</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
@@ -20,19 +20,28 @@
           <th>Group</th>
           <th>Submitter</th>
           <th>Submission Time</th>
+          <th>Translated</th>
         </tr>
         <!-- Each individual image will take a line -->
         {% for image in image_list %}
           <tr>
             <!-- image name will link to the OpenSeadragon page -->
-            <td><a href="{% url 'annotations:imageviews' image.id %}">{{ image.image_name }}</a></td>
+            <td>
+            {% if image.translated %}
+               <a href="{% url 'annotations:image-views' image.id %}">{{ image.image_name }}
+               </a>
+            {% else %}
+               <a>{{image.image_name}}</a>
+            {% endif %}
             <!-- TBF: the group page -->
             <td><a> {{ image.group }} </a></td>
             <!-- TBF: the user page -->
             <td><a> {{ image.submit_user }}</a></td>
             <!-- TBF: a fliter(?) w.r.t. the date-->
             <td><a> {{ image.submission_date }}</a></td>
-          </tr>
+            <!-- the indicator that the image is translatted or not -->
+            <td><p> {{ image.translated|yesno:"✔,✘" }} </p></td>
+           </tr>
         {% endfor %}
       </table>
     </div>

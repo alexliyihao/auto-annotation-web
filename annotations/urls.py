@@ -1,5 +1,6 @@
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 app_name = "annotations"
@@ -10,6 +11,4 @@ urlpatterns = [
     path('registration/', views.RegistrationView.as_view(), name='registration'),
     path('registration/success/', views.registration_success_views, name="regi-success"),
     path('image_upload/', views.image_upload_views, name='image-upload'),
-    path('image_upload/success', views.image_upload_success_views, name='image-upload-success')
-
-    ]
+    path('image_upload/success', views.image_upload_success_views, name='image-upload-success')]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

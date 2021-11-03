@@ -30,13 +30,14 @@ def image_views(request, image_id):
     '''
     The view for page image_view, for detailed annotations on a specific image
     '''
-     try:
-         # find the Image by image_id, or throw a 404 error
-         image = Image.objects.get(pk = image_id)
-         #please be noticed that file_path is only for debugging purpose, to be corrected
-         return render(request, 'annotations/image_view.html', {'image':image, 'file_path':'/dzis/'})
-     except(KeyError, Image.DoesNotExist):
-         return HttpResponseRedirect(reverse('annotations:image-list'))
+    try:
+        # find the Image by image_id, or throw a 404 error
+        image = Image.objects.get(pk = image_id)
+        #please be noticed that file_path is only for debugging purpose, to be corrected
+        # This replace is to workaround the path requirement from models.filepathfield
+        return render(request, 'annotations/image_view.html', {'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
+    except(KeyError, Image.DoesNotExist):
+        return HttpResponseRedirect(reverse('annotations:image-list'))
 
 
 #Deprecated for image_view settings
@@ -79,11 +80,22 @@ def image_upload_views(request):
     if request.method == "POST":
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            f = form.save(commit = False)
+            f.image_upload.upload_to = f"svss/{f.image_name}.svs"
+            f.submission_date = datetime.now()
+            f.svs_path = f"svss/{f.image_name}.svs"
+            f.dzi_path = f"dzis/{f.image_name}.dzi"
+            f.height = 0
+            f.width = 0
+            f.completely_annotated = False
+            f.translated = False 
+            f.save()
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
+        else:
+            print(form.errors)
     else:
         form = ImageUploadForm()
-    return render(request, 'annotations/upload_image.html', {'form': form})
+    return render(request, 'annotations/image_upload.html', {'form': form})
 
 def image_upload_success_views(request):
     '''

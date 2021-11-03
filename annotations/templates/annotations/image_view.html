@@ -21,7 +21,7 @@
 <body>
   <div class='title'>
     <h1>Imageview: {{image.image_name}}</h1>
-    <a class='return' href="{% url 'annotations:imagelist' %}">Return to image list</a>
+    <a class='return' href="{% url 'annotations:image-list' %}">Return to image list</a>
   <!-- this div is used for debugging, meanwhile tracking the mouse-->
   <div class="info" style="position: fixed; top: 0px; left:400px; width: 800px; height:200px">
       <div class="position"></div>
@@ -44,7 +44,7 @@
           showNavigator:  true,
           prefixUrl: "{% static 'annotations/openseadragon/images/' %}",
           //this tileSources is only for debugging mode -- to be corrected
-          tileSources:[ "{{file_path}}{{image.dzi_path}}"]
+          tileSources:[ "{{filepath}}{{image_path}}"]
       });
 
       // OpenSeaDragon.Annotorious config

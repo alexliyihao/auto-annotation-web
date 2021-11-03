@@ -19,6 +19,9 @@ mimetypes.add_type("text/css", ".css", True)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 FILES_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
+# This media folder is for debugging mode, to be corrected
+MEDIA_ROOT = FILES_DIR
+MEDIA_URL  = '/dzis/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -125,9 +128,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# This media folder is for debugging mode, to be corrected
-MEDIA_ROOT = FILES_DIR
-MEDIA_URL  = '/dzis/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

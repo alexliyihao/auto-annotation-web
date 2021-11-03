@@ -7,7 +7,7 @@ class User(auth_user):
     password, first name, last name, and email from django.contrib.auth.models.User
     """
     # UNI
-    UNI = models.CharField(max_length = 8)
+    UNI = models.CharField(max_length = 8, unique=True)
     # The date user registered
     register_date = models.DateTimeField('date of registration', blank = True)
     # The organization this user belongs to
@@ -20,7 +20,7 @@ class Organization(models.Model):
     Organization identity
     """
     # The name of the organization
-    organization_name = models.CharField(max_length = 40)
+    organization_name = models.CharField(max_length = 40, unique=True)
     # The supervisor of the organization
     supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank = True)
 
@@ -32,9 +32,7 @@ class ImageGroup(models.Model):
     The group of whole slide image group, for management purpose
     """
     # The name of this group
-    group_name = models.CharField(max_length = 200)
-    # The size of the group
-    group_size = models.PositiveIntegerField(default = 0)
+    group_name = models.CharField(max_length = 200, unique=True)
     # The description to this group
     group_description = models.TextField()
 
@@ -46,13 +44,13 @@ class Image(models.Model):
     The whole slide image identity
     """
     # Name of the image
-    image_name = models.CharField(max_length = 200)
+    image_name = models.CharField(max_length = 200, unique=True)
     # The date submitted
     submission_date = models.DateTimeField('date of submission')
     # The upload specific field for uploading
     image_upload = models.FileField(upload_to = 'svss/')
     # The upload specific field as traslating indicator
-    #translated = models.BooleanField(default= 'False')
+    translated = models.BooleanField(default= 'False')
     # The path of Aperio SVS file(original file)
     svs_path = models.FilePathField(path = "/home/alexliyihao/svss", match = ".*\.svs")
     # The path of Deep Zoom Image(dzi) file generated from svs file
@@ -68,7 +66,7 @@ class Image(models.Model):
     # The group this image belongs to
     group = models.ForeignKey(ImageGroup, on_delete=models.SET_NULL, blank = True, null = True)
     # The user who submit this image
-    submit_user = models.ForeignKey(User, on_delete=models.PROTECT)
+    submit_user = models.ForeignKey(User, on_delete=models.PROTECT, blank = True, null = True)
 
     def __str__(self):
        return self.image_name
