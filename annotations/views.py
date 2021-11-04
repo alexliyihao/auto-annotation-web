@@ -5,10 +5,10 @@ from django.conf import settings
 from .models import Image, User
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
-from .forms import UserRegistrationForm, ImageUploadForm
+from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm
 from datetime import datetime
 import subprocess
-
+from django.contrib.auth import LoginView
 class ImageListView(generic.ListView):
     '''
     The view for page image_list, for a brief skimming over the image list
@@ -88,18 +88,18 @@ def image_upload_views(request):
             # openslide has poor support with python3.5+, so run it from external scripts
             dimensions = subprocess.check_output([
                                     "python3.5",
-                                    "../ext_script/dimensions.py", 
+                                    "../ext_script/dimensions.py",
                                     "../svss/test.svs"
                                     ])
             # interpret the result, the last character is newline character
             f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
             f.completely_annotated = False
-	    # TBD: See the line below 
+	    # TBD: See the line below
             f.translated = True
             f.save()
             # after the file is uploaded, run a translation procedure
             # TBD: can we run it internally rather than on the page? It takes too long
-            subprocess.run(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
+            subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
             print(form.errors)
@@ -112,3 +112,11 @@ def image_upload_success_views(request):
     The view for page image_upload_success, for the success page of image uploading process
     '''
     return render(request, "annotations/image_upload_success.html")
+
+class UserLoginView(LoginView):
+    '''
+    The view for page login, for the user's login page
+    '''
+    template_name = "annotations/login.html"
+    authentication_form = UserLoginForm
+    redirect_authenticated_user = False
