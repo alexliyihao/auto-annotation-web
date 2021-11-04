@@ -1,12 +1,133 @@
+
+/* login widgets */
+div#login-widget.login-widget {
+  position: absolute;
+  right: 1em;
+  bottom: 0px;
+  width: auto;
+  height: 1.5em;
+}
+
+/* login widgets anchor*/
+.login-widget a{
+  display: inline-block;
+}
+
+/* login widgets paragraph */
+.login-widget p{
+  display: inline-block;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+
 /* general title div */
-.title{
-  height: 10%;
-  width: 100%;
+div#title.title {
   background-color: lightblue;
   align-items: center;
-  justify-content: flex-start;
   position:fixed;
   top:0px;
+  left:0px;
+  height:calc(10% + 39px);
+  width: 100%;
+  transition: margin-left .8s;
+  transition: width .8s;
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}
+
+/* general title header */
+.title h1{
+  position: absolute;
+  font-size: 2.5em;
+  z-index: 1;
+  top: 0em;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  padding-top: 0.25em;
+  padding-left: 0.25em;
+}
+
+/* The sidebar menu */
+.SideBar {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0;
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.8s; /* 0.8 second transition effect to slide in the sidebar */
+}
+
+/* The sidebar links */
+.SideBar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: gray;
+  display: block;
+  transition: 0.8s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.SideBar a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.SideBar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* The button used to open the sidebar */
+.openbotton {
+  position: absolute;
+  bottom: 0;
+  z-index: 1; /* always at the top */
+  font-size: 15px;
+  cursor: pointer;
+  background-color: lightblue;
+  color: white;
+  float: left;
+  padding: 10px 2em;
+  border: none;
+}
+
+.openbotton:hover {
+  position: absolute;
+  z-index: 1;
+  background-color: #444;
+}
+
+/* general body background */
+div#body.body {
+  position:absolute;
+  left:0px;
+  top: calc(10% + 39px);
+  height: 85%;
+  width: 100%;
+  background-color: white;
+  transition: margin-left .8s;
+  transition: width .8s;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction:column;
+  justify-content: flex-start;
+}
+
+/* OpenSeadragon specific div */
+#openseadragon-div{
+  width: 100%;
+  height: 80%;
+  position:fixed;
+  top:20%;
   left:0px;
 }
 
@@ -19,30 +140,15 @@ h1{
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* general body background */
-.body_background{
-  position:fixed;
-  top:10%;
-  left:0px;
-  height: 90%;
-  width: 100%;
-  background-color: white;
-}
-
-/* OpenSeadragon specific div */
-#openseadragon-div{
-  width: 100%;
-  height: 80%;
-  position:fixed;
-  top:20%;
-  left:0px;
-}
-
 /* general table settings */
 table{
-  width:80%;
-  border-collapse:collapse;
+  top: 10%;
+  margin-top: 2em;
+  width: 80%;
+  padding: 0;
+  border-collapse: collapse;
   font-family: Arial, Helvetica, sans-serif;
+  table-layout:auto;
 }
 
 td, th{
@@ -79,19 +185,19 @@ select {
   background-color: #f1f1f1;
 }
 
-a{
+.body a{
   text-decoration: none;
 }
-a:link{
+.body a:link{
   color:black;
 }
-a:visited{
+.body a:visited{
   color: black;
 }
-a:hover{
+.body a:hover{
   color: blue;
 }
-a:active{
+.body a:active{
   color: white;
 }
 

@@ -141,3 +141,8 @@ def user_logout_success_view(request):
     '''
     return render(request, "annotations/logout_success.html")
 
+def contact_view(request):
+    '''
+    The view for page contact, for contact page
+    '''
+    return render(request, "annotations/contact.html")

@@ -2,15 +2,58 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Uploading Success- AAAP</title>
+    <title>Uploading Success - AAAP</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
   </head>
 <body>
-  <div class='title'>
-    <h1>New Image Uploading</h1>
+  <!-- A sidebar listing functionalities -->
+  <div id="side_bar" class="SideBar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!-- To be finished: User Profile -->
+    <a href="#">Profile</a>
+    <!-- Image uploading page -->
+    <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
+    <!-- Contact Page -->
+    <a href="{% url 'annotations:contact'%}">Contact</a>
   </div>
-  <div class="body_background">
+
+  <!-- the script for side bar menu -->
+  <script type="text/javascript">
+    /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+    function openNav() {
+    document.getElementById("side_bar").style.width = "250px";
+    document.getElementById("title").style.marginLeft = "250px";
+    document.getElementById("title").style.width = "calc(100% - 250px)"
+    document.getElementById("body").style.marginLeft = "250px";
+    document.getElementById("body").style.width = "calc(100% - 250px)"
+    }
+
+    /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+    function closeNav() {
+    document.getElementById("side_bar").style.width = "0";
+    document.getElementById("title").style.marginLeft = "0";
+    document.getElementById("title").style.width = "100%"
+    document.getElementById("body").style.marginLeft = "0";
+    document.getElementById("body").style.width = "100%"
+    }
+  </script>
+
+  <div id='title' class='title'>
+    <h1>New Image Upload</h1>
+    <div id='login-widget' class='login-widget'>
+    {% if user.is_authenticated %}
+       <p>Welcome, {{ user.get_username }}.</p>
+       <a href="{% url 'annotations:logout' %}">[logout]</a>
+    {% else %}
+      <p>Welcome, new user.</p>
+      <a href="{% url 'annotations:login' %}" >[login]</a>
+      <a href="{% url 'annotations:registration' %}" >[register]</a>
+    {% endif %}
+    <button class="openbotton" onclick="openNav()">&#9776; Menu</button>
+    </div>
+  </div>
+  <div id='body' class='body'>
     <div class="Introduction">
       <p>You have successfully uploaded the image</p>
       <a class='return' href="{% url 'annotations:image-list' %}">Return to image list</a>
