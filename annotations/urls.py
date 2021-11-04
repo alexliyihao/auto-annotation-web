@@ -14,4 +14,5 @@ urlpatterns = [
     path('image_upload/success', views.image_upload_success_views, name='image-upload-success'),
     path('login/', views.UserLoginView.as_view(), name = 'login'),
     path('login/success', views.user_login_success_view, name = 'login-success'),
+    path('logout', views.UserLogoutView.as_view(), name = "logout"),
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

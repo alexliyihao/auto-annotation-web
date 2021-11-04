@@ -12,7 +12,7 @@
     <div class='title'>
       <h1>Image List</h1>
       {% if user.is_authenticated %}
-       <p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>
+       <p>Welcome, {{ user.get_username }}.</p><a href="{% url 'annotations:logout' %}">logout</a>
       {% else %}
       <p>Welcome, new user. Please log in.</p>
       {% endif %}
