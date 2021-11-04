@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm
 from datetime import datetime
 import subprocess
-from django.contrib.auth.views import LoginView, LogOutView
+from django.contrib.auth.views import LoginView, LogoutView
 
 class ImageListView(generic.ListView):
     '''
@@ -128,9 +128,16 @@ def user_login_success_view(request):
     '''
     return render(request, "annotations/login_success.html")
 
-class UserLogoutView(LogOutView):
+class UserLogoutView(LogoutView):
     '''
     The view for page logout, for user's logout page
     '''
     template_name = "annotations/logout_success.html"
-    next_page = ""
+    next_page = reverse_lazy("annotations:logout-success")
+
+def user_logout_success_view(request):
+    '''
+    The view for page logout_success, for user's login success page
+    '''
+    return render(request, "annotations/logout_success.html")
+

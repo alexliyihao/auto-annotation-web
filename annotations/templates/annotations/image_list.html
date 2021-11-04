@@ -11,11 +11,15 @@
     <!-- the title part -->
     <div class='title'>
       <h1>Image List</h1>
+      <div style="position: absolute; top: 0;right: 0;">
       {% if user.is_authenticated %}
-       <p>Welcome, {{ user.get_username }}.</p><a href="{% url 'annotations:logout' %}">logout</a>
+       <p>Welcome, {{ user.get_username }}.</p>
+       <a href="{% url 'annotations:logout' %}">logout</a>
       {% else %}
-      <p>Welcome, new user. Please log in.</p>
+      <p>Welcome, new user. Please</p> 
+      <a href="{% url 'annotations:login' %}" >log in</a>.
       {% endif %}
+      </div>
     </div>
     <!-- the body part -->
     <div class='body_background'>
