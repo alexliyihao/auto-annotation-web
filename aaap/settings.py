@@ -22,7 +22,7 @@ FILES_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
 # This media folder is for debugging mode, to be corrected
 MEDIA_ROOT = FILES_DIR
 MEDIA_URL  = '/dzis/'
-LOGIN_REDIRECT_URL = 'annotations/image_list'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 

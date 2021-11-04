@@ -11,6 +11,11 @@
     <!-- the title part -->
     <div class='title'>
       <h1>Image List</h1>
+      {% if user.is_authenticated %}
+       <p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>
+      {% else %}
+      <p>Welcome, new user. Please log in.</p>
+      {% endif %}
     </div>
     <!-- the body part -->
     <div class='body_background'>

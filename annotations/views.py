@@ -8,7 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm
 from datetime import datetime
 import subprocess
-from django.contrib.auth import LoginView
+from django.contrib.auth.views import LoginView
+
 class ImageListView(generic.ListView):
     '''
     The view for page image_list, for a brief skimming over the image list
@@ -120,3 +121,9 @@ class UserLoginView(LoginView):
     template_name = "annotations/login.html"
     authentication_form = UserLoginForm
     redirect_authenticated_user = False
+    
+def user_login_success_view(request):
+    '''
+    The view for page login_success, for user's login success page
+    '''
+    return render(request, "annotations/login_success.html")    

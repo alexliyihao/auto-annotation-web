@@ -12,5 +12,6 @@ urlpatterns = [
     path('registration/success/', views.registration_success_views, name="regi-success"),
     path('image_upload/', views.image_upload_views, name='image-upload'),
     path('image_upload/success', views.image_upload_success_views, name='image-upload-success'),
-    path('login/', views.UserLoginView.as_view(), name = 'login')
+    path('login/', views.UserLoginView.as_view(), name = 'login'),
+    path('login/success', views.user_login_success_view, name = 'login-success'),
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
