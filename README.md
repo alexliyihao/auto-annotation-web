@@ -15,3 +15,5 @@ Beside django version dependency described in requirement.txt, other dependency 
 - Annotorious Toolbar https://github.com/recogito/recogito-client-plugins (included in the repo)
 
 - Annotorious Better Polygon https://github.com/recogito/recogito-client-plugins/tree/main/plugins/annotorious-better-polygon (included in the repo)
+
+- Annotorious Selector Pack https://github.com/recogito/annotorious-selector-pack (included in the repo)
