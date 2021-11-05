@@ -37,7 +37,7 @@ def image_views(request, image_id):
         image = Image.objects.get(pk = image_id)
         #please be noticed that file_path is only for debugging purpose, to be corrected
         # This replace is to workaround the path requirement from models.filepathfield
-        return render(request, 'annotations/image_view.html', {'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
+        return render(request, 'annotations/image_view.html', {'image_name': image.image_name, 'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
     except(KeyError, Image.DoesNotExist):
         return HttpResponseRedirect(reverse('annotations:image-list'))
 

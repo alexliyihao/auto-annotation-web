@@ -17,6 +17,8 @@
     <script src="{% static 'annotations/annotorious-toolbar.min.js' %}"></script>
     <!-- Annotorious Better Polygon Plugin -->
     <script src="{% static 'annotations/annotorious-better-polygon.js'%}"></script>
+    <!-- Annotorious Selector Pack plugin -->
+    <script src="{% static 'annotations/annotorious-selector-pack.min.js'%}"></script>
 </head>
 
 
@@ -24,6 +26,8 @@
   <!-- A sidebar listing functionalities -->
   <div id="side_bar" class="SideBar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!-- Image List -->
+    <a href="{% url 'annotations:image-list' %}">Image List</a>
     <!-- To be finished: User Profile -->
     <a href="#">Profile</a>
     <!-- Image uploading page -->
@@ -54,8 +58,7 @@
   </script>
 
   <div id='title' class='title'>
-    <h1>Imageview: {{image.image_name}}</h1>
-    <a class='return' href="{% url 'annotations:image-list' %}">Return to image list</a>
+    <h1>Imageview: {{image_name}}</h1>
     <div id='login-widget' class='login-widget'>
     {% if user.is_authenticated %}
        <p>Welcome, {{ user.get_username }}.</p>
@@ -73,8 +76,8 @@
       <div class="zoom" style="margin-top: 1em;"></div>
   </div>
   </div>
-  <div id='body' class='body'>
-  <div id="annotorious-toolbar" style="position:fixed;top:10%"></div>
+  <div id='body' class='body', style = "top:15%">
+  <div id="annotorious-toolbar"></div>
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
   </div>
@@ -106,10 +109,11 @@
       //register the viewer and the configuration to Annotorious
       var anno = OpenSeadragon.Annotorious(viewer, config);
 
-
+      //register Better Polygon
       Annotorious.BetterPolygon(anno);
-      //set the drawing tool to polygon (rect doesn't make much sense here)
-      anno.setDrawingTool(toolName = 'polygon');
+
+      //Add Selector Pack
+      Annotorious.SelectorPack(anno);
 
       //add a toolbar to the openseadragon viewer
       Annotorious.Toolbar(anno, document.getElementById('annotorious-toolbar'));
