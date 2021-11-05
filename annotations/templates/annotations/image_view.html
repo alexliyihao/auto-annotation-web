@@ -15,6 +15,8 @@
     <script src="{% static 'annotations/openseadragon-annotorious.min.js' %}"></script>
     <!-- Annotorious Toolbar Plugin -->
     <script src="{% static 'annotations/annotorious-toolbar.min.js' %}"></script>
+    <!-- Annotorious Better Polygon Plugin -->
+    <script src="{% static 'annotations/annotorious-better-polygon.js'%}"></script>
 </head>
 
 
@@ -104,6 +106,8 @@
       //register the viewer and the configuration to Annotorious
       var anno = OpenSeadragon.Annotorious(viewer, config);
 
+
+      Annotorious.BetterPolygon(anno);
       //set the drawing tool to polygon (rect doesn't make much sense here)
       anno.setDrawingTool(toolName = 'polygon');
 
