@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Image List - AAAP</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
+  </head>
+  <body>
+
+  <!-- A sidebar listing functionalities -->
+  <div id="side_bar" class="SideBar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!-- To be finished: User Profile -->
+    <a href="#">Profile</a>
+    <!-- Image uploading page -->
+    <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
+    <!-- Contact Page -->
+    <a href="{% url 'annotations:contact'%}">Contact</a>
+  </div>
+
+  <!-- the script for side bar menu -->
+  <script type="text/javascript">
+    /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+    function openNav() {
+    document.getElementById("side_bar").style.width = "250px";
+    document.getElementById("title").style.marginLeft = "250px";
+    document.getElementById("title").style.width = "calc(100% - 250px)"
+    document.getElementById("body").style.marginLeft = "250px";
+    document.getElementById("body").style.width = "calc(100% - 250px)"
+    }
+
+    /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+    function closeNav() {
+    document.getElementById("side_bar").style.width = "0";
+    document.getElementById("title").style.marginLeft = "0";
+    document.getElementById("title").style.width = "100%"
+    document.getElementById("body").style.marginLeft = "0";
+    document.getElementById("body").style.width = "100%"
+    }
+  </script>
+  {% block content %}
+  {% endblock %}
+  </body>
+</html>
