@@ -95,11 +95,11 @@ def image_upload_views(request):
             # interpret the result, the last character is newline character
             f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
             f.completely_annotated = False
-	    # TBD: See the line below
-            f.translated = True
+            f.translated = False
             f.save()
-            # after the file is uploaded, run a translation procedure
-            # TBD: can we run it internally rather than on the page? It takes too long
+            # after the file is uploaded, run a translation procedure,
+            # It works internally as long as the server is not interrupted
+            # TBD: how to update the translated and the svs/dzi path? 
             subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
