@@ -5,7 +5,7 @@ from django.conf import settings
 from .models import Image, User
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
-from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm
+from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm, AnnotationCreateform
 from datetime import datetime
 import subprocess
 from django.contrib.auth.views import LoginView, LogoutView
@@ -32,14 +32,34 @@ def image_views(request, image_id):
     '''
     The view for page image_view, for detailed annotations on a specific image
     '''
-    try:
-        # find the Image by image_id, or throw a 404 error
-        image = Image.objects.get(pk = image_id)
-        #please be noticed that file_path is only for debugging purpose, to be corrected
-        # This replace is to workaround the path requirement from models.filepathfield
-        return render(request, 'annotations/image_view.html', {'image_name': image.image_name, 'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
-    except(KeyError, Image.DoesNotExist):
-        return HttpResponseRedirect(reverse('annotations:image-list'))
+    # if we are getting it via post, it's editing
+    if request.method == 'POST':
+        form = AnnotationCreateform(request.POST)
+        if form.is_valid():
+            f = form.save(commit = False)
+            f.update_date = datetime.now()
+            f.image = Image.objects.get(pk = image_id)
+            f.annotator = request.user
+            f.save()
+    # if we are getting it via get, it's reading
+    else:
+        try:
+            # find the Image by image_id, or throw a 404 error
+            image = Image.objects.get(pk = image_id)
+            #please be noticed that file_path is only for debugging purpose, to be corrected
+            # This replace is to workaround the path requirement from models.filepathfield
+            return render(
+                            request,
+                            'annotations/image_view.html',
+                            {
+                                'image_id':image.id,
+                                'image_name': image.image_name,
+                                'image_path':image.dzi_path.replace("home/alexliyihao/",""),
+                                'filepath':'/dzis/'
+                            }
+                        )
+        except(KeyError, Image.DoesNotExist):
+            return HttpResponseRedirect(reverse('annotations:image-list'))
 
 
 #Deprecated for image_view settings
@@ -99,7 +119,7 @@ def image_upload_views(request):
             f.save()
             # after the file is uploaded, run a translation procedure,
             # It works internally as long as the server is not interrupted
-            # TBD: how to update the translated and the svs/dzi path? 
+            # TBD: how to update the translated and the svs/dzi path?
             subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:

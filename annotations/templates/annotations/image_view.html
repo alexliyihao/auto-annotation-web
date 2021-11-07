@@ -81,6 +81,7 @@
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
   </div>
+
   <!-- scripts -->
 
   <script type="text/javascript">
@@ -153,7 +154,8 @@
 
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {
-        console.log(annotation)
+            $.post( '$image_views/'+{{image_id}}+'/', {contour = JSON.stringify(annotation)}
+            console.log(annotation)
         });
   </script>
 </body>

@@ -1,7 +1,8 @@
 from django import forms
-from .models import Organization, User, Image
+from .models import Organization, User, Image, Annotation
 from datetime import datetime
 from django.contrib.auth.forms import AuthenticationForm
+
 class UserRegistrationForm(forms.ModelForm):
     """
     The form for new user registration
@@ -29,3 +30,11 @@ class UserLoginForm(AuthenticationForm):
                 _("This account is inactive."),
                 code='inactive',
             )
+
+class AnnotationCreateform(forms.ModelForm):
+    '''
+    The form for submitting annotations
+    '''
+    class Meta:
+        model = Annotation
+        fields = ['contour','update_date', "image", "annotator"]
