@@ -37,7 +37,7 @@ def image_views(request, image_id):
         image = Image.objects.get(pk = image_id)
         #please be noticed that file_path is only for debugging purpose, to be corrected
         # This replace is to workaround the path requirement from models.filepathfield
-        return render(request, 'annotations/image_view.html', {'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
+        return render(request, 'annotations/image_view.html', {'image_name': image.image_name, 'image_path':image.dzi_path.replace("home/alexliyihao/",""), 'filepath':'/dzis/'})
     except(KeyError, Image.DoesNotExist):
         return HttpResponseRedirect(reverse('annotations:image-list'))
 
@@ -95,11 +95,11 @@ def image_upload_views(request):
             # interpret the result, the last character is newline character
             f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
             f.completely_annotated = False
-	    # TBD: See the line below
-            f.translated = True
+            f.translated = False
             f.save()
-            # after the file is uploaded, run a translation procedure
-            # TBD: can we run it internally rather than on the page? It takes too long
+            # after the file is uploaded, run a translation procedure,
+            # It works internally as long as the server is not interrupted
+            # TBD: how to update the translated and the svs/dzi path? 
             subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
