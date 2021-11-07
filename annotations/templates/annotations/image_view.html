@@ -149,6 +149,16 @@
           tracker.setTracking(true);
 
           viewer.addHandler('animation', updateZoom);
+
+      // this is an attempt outputting the polygon format
+      anno.addHandler('onAnnotationCreated', function(annotation) {
+        var body = annotation.body;
+        var contour = annotation.target
+        var id = annotation.id;
+        console.log(annotation)
+        });
+
+    });
       });
   </script>
 </body>
