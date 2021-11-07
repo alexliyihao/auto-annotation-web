@@ -87,7 +87,7 @@ div#title.title {
 }
 
 /* The button used to open the sidebar */
-.openbotton {
+.openbutton {
   position: absolute;
   bottom: 0;
   z-index: 1; /* always at the top */
@@ -100,7 +100,7 @@ div#title.title {
   border: none;
 }
 
-.openbotton:hover {
+.openbutton:hover {
   position: absolute;
   z-index: 1;
   background-color: #444;
