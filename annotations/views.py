@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
 from .models import Image, User
@@ -35,12 +35,15 @@ def image_views(request, image_id):
     # if we are getting it via post, it's editing
     if request.method == 'POST':
         form = AnnotationCreateform(request.POST)
-        if form.is_valid():
-            f = form.save(commit = False)
-            f.update_date = datetime.now()
-            f.image = Image.objects.get(pk = image_id)
-            f.annotator = request.user
-            f.save()
+        request_contour = request.POST.get('data', "error")
+        print(f"contour get is {request_contour}")
+        f = form.save(commit = False)
+        f.contour = request_contour
+        f.update_date = datetime.now()
+        f.image = Image.objects.get(pk = image_id)
+        f.annotator = User.objects.get(username=request.user.username)
+        f.save()
+        return JsonResponse(request_contour, safe = False) 
     # if we are getting it via get, it's reading
     else:
         try:

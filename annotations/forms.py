@@ -25,11 +25,7 @@ class UserLoginForm(AuthenticationForm):
     The form for user login
     '''
     def confirm_login_allowed(self, user):
-        if not user.is_active:
-            raise ValidationError(
-                _("This account is inactive."),
-                code='inactive',
-            )
+        pass
 
 class AnnotationCreateform(forms.ModelForm):
     '''

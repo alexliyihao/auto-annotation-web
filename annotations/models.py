@@ -80,13 +80,13 @@ class Annotation(models.Model):
     Each individual annotation entity
     """
     # The contour of the annotation
-    contour = models.JSONField()
+    contour = models.JSONField(blank = True)
     # The date this annotation is updated
-    update_date = models.DateTimeField('date submit this annotation')
+    update_date = models.DateTimeField('date submit this annotation', blank = True)
     # The image it belongs to
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, blank = True)
     # The user who submitted this annotation
-    annotator = models.ForeignKey(User, on_delete=models.PROTECT)
+    annotator = models.ForeignKey(User, on_delete=models.PROTECT, blank = True)
 
     def __str__(self):
        return f"{self.image}_{self.annotator}_{self.update_date}"

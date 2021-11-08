@@ -19,6 +19,8 @@
     <script src="{% static 'annotations/annotorious-better-polygon.js'%}"></script>
     <!-- Annotorious Selector Pack plugin -->
     <script src="{% static 'annotations/annotorious-selector-pack.min.js'%}"></script>
+    <!-- jQuery-->
+    <script src="{% static 'annotations/jquery.min.js'%}"></script>
 </head>
 
 
@@ -151,12 +153,20 @@
 
           viewer.addHandler('animation', updateZoom);
       });
-
+      
+      var django_csrf_token = '{{ csrf_token }}'; 
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {
-            $.post( '$image_views/'+{{image_id}}+'/', {contour = JSON.stringify(annotation)}
+          $.ajax({
+              url:"", 
+              method:"POST",
+              headers: {'X-CSRFToken': '{{ csrf_token }}'},
+              data: JSON.stringify({'contour': annotation}),
+              datatype: 'json'
+          }).done(function(annotation){
             console.log(annotation)
         });
+      });
   </script>
 </body>
 </html>
