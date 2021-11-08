@@ -154,6 +154,7 @@
           viewer.addHandler('animation', updateZoom);
       });
       
+      anno.setAnnotations({{ annotation_set|safe }});
       var django_csrf_token = '{{ csrf_token }}'; 
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {

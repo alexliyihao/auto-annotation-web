@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
-from .models import Image, User
+from .models import Image, User, Annotation
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm, AnnotationCreateform
@@ -49,6 +49,9 @@ def image_views(request, image_id):
         try:
             # find the Image by image_id, or throw a 404 error
             image = Image.objects.get(pk = image_id)
+            # Scan the annotation set for the annotation on this image
+            # for it's returning a QuerySet object, translate it into array with only the Json format
+            annotation_set = json.dumps([i.contour["contour"] for i in Annotation.objects.filter(image = image).iterator()])
             #please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
@@ -58,7 +61,8 @@ def image_views(request, image_id):
                                 'image_id':image.id,
                                 'image_name': image.image_name,
                                 'image_path':image.dzi_path.replace("home/alexliyihao/",""),
-                                'filepath':'/dzis/'
+                                'filepath':'/dzis/',
+                                'annotation_set': annotation_set
                             }
                         )
         except(KeyError, Image.DoesNotExist):
