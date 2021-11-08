@@ -9,6 +9,7 @@ from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm, Annotat
 from datetime import datetime
 import subprocess
 from django.contrib.auth.views import LoginView, LogoutView
+import json
 
 class ImageListView(generic.ListView):
     '''
@@ -35,8 +36,7 @@ def image_views(request, image_id):
     # if we are getting it via post, it's editing
     if request.method == 'POST':
         form = AnnotationCreateform(request.POST)
-        request_contour = request.POST.get('data', "error")
-        print(f"contour get is {request_contour}")
+        request_contour = json.loads(request.body.decode("utf-8"))
         f = form.save(commit = False)
         f.contour = request_contour
         f.update_date = datetime.now()
