@@ -66,7 +66,11 @@
           allowEmpty:false,
           gigapixelMode:true,
           widgets: [
-              'COMMENT'
+              'COMMENT',
+              {
+                widget: 'TAG',
+                vocabulary: [ 'Glomerulus', 'Tubules', 'Arteries', 'interstitium']
+              }
           ]
       };
 
@@ -114,8 +118,10 @@
 
           viewer.addHandler('animation', updateZoom);
       });
-
+      // When a GET request loading the page, load all the annotations on this Image
       anno.setAnnotations({{ annotation_set|safe }});
+
+      // this crsf token is for the POST requests
       var django_csrf_token = '{{ csrf_token }}';
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {

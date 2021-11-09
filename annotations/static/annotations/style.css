@@ -204,11 +204,45 @@ select {
 .body a:active{
   color: white;
 }
-
+/* general li */
 li{
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.5em;
   text-indent: 2.5em;
   list-style: none;
+}
+
+/* The followings are cutomizing the annotorious' looking */
+svg.a9s-annotationlayer .a9s-selection .a9s-outer,
+svg.a9s-annotationlayer .a9s-annotation .a9s-outer {
+  display:none;
+}
+
+svg.a9s-annotationlayer .a9s-handle .a9s-handle-outer {
+  display:none;
+}
+
+/** New style for the annotation outlines **/
+svg.a9s-annotationlayer .a9s-selection .a9s-inner,
+svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
+  stroke-width:4;
+  stroke:white;
+  stroke-dasharray:5;
+}
+
+/** Disable the hover effect from the default stylesheet **/
+svg.a9s-annotationlayer .a9s-annotation.editable:hover .a9s-inner {
+  fill:transparent;
+}
+
+/** Corner handles **/
+svg.a9s-annotationlayer .a9s-handle .a9s-handle-inner {
+  fill:white;
+  stroke:white;
+}
+
+/** Enable the dim mask, black with 60% transparency **/
+svg.a9s-annotationlayer .a9s-selection-mask {
+  fill:rgba(0, 0, 0, 0.6);
 }
