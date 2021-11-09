@@ -4,6 +4,7 @@ from django.urls import reverse,reverse_lazy
 from django.conf import settings
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from django.views import generic
 
@@ -89,6 +90,7 @@ class RegistrationView(generic.edit.CreateView):
         '''
         f = form.save(commit = False)
         f.register_date = timezone.now()
+        f.password = make_password(f.password)
         f.save()
         return super().form_valid(form)
 

@@ -24,9 +24,9 @@
 
     <!-- the body part -->
     <div id='body' class='body'>
-
       <table>
         <tr>
+          <th>Image ID</th>
           <th>Image Name</th>
           <th>Group</th>
           <th>Submitter</th>
@@ -36,6 +36,7 @@
         <!-- Each individual image will take a line -->
         {% for image in image_list %}
           <tr>
+            <td>{{image.pk}}</td>
             <!-- image name will link to the OpenSeadragon page -->
             <td>
             {% if image.translated %}
