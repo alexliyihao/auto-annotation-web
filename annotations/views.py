@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
 from django.contrib.auth.views import LoginView, LogoutView
@@ -34,24 +34,52 @@ def image_views(request, image_id):
     '''
     # if we are getting it via post, it's editing
     if request.method == 'POST':
-        # init a form
-        form = AnnotationCreateform(request.POST)
-        # this contour is sent from a ajax post request
-        request_contour = json.loads(request.body.decode("utf-8"))
-        # create a form instance
-        f = form.save(commit = False)
-        # Save the corresponding informations
-        f.contour = request_contour['contour']
-        # This additional id is used for edit and deletions
-        f.W3C_id = f.contour['id']
-        f.update_date = timezone.now()
-        # The image belonging is grabbed from the image_id
-        f.image = Image.objects.get(pk = image_id)
-        # The user is the user submitting the request
-        f.annotator = User.objects.get(username=request.user.username)
-        # saving the files
-        f.save()
-        return JsonResponse(request_contour, safe = False)
+        # get request from a ajax post request
+        request = json.loads(request.body.decode("utf-8"))
+        # get the action from the request
+        action = request['action']
+        if action == 'create_annotation':
+            # init a form
+            form = AnnotationCreateform(request.POST)
+            # create a form instance
+            f = form.save(commit = False)
+            # Save the corresponding informations
+            f.contour = request['annotation']
+            # This additional id is used for edit and deletions
+            f.W3C_id = f.contour['id']
+            # The time is current time
+            f.update_date = timezone.now()
+            # The image belonging is grabbed from the image_id
+            f.image = Image.objects.get(pk = image_id)
+            # The user is the user submitting the request
+            f.annotator = User.objects.get(username=request.user.username)
+            # saving the files
+            f.save()
+            return HttpResponse(f'annotation {f.W3C_id} saved')
+        elif action == 'delete_annotation':
+            # get the id need to be deleted
+            delete_id = request['annotation']
+            # find the instace to be deleted
+            anno_tbd = Annotation.object.get(W3C_id = delete_id)
+            # delete the instance
+            anno_tbd.delete()
+            return HttpResponse(f'annotation {delete_id} deleted')
+        elif action == 'updateAnnotation':
+            # This update will update at the original instance,
+            # in order to control the primary key scale
+            # get the id need to be deleted
+            update_id = request['previous']
+            # find the instance to be updated
+            anno_tbu = Annotation.object.get(W3C_id = update_id)
+            # Save the corresponding informations
+            anno_tbu.contour = request['annotation']
+            # This additional id is used for edit and deletions
+            anno_tbu.W3C_id = f.contour['id']
+            # The time is current time
+            anno_tbu.update_date = timezone.now()
+            # save the instance
+            anno_tbu.save()
+            return HttpResponse(f'annotation {update_id} updated to {anno_tbu.W3C_id}')
     # if we are getting it via get, it's reading
     else:
         try:

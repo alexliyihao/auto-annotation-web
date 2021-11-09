@@ -123,11 +123,46 @@
               url:"",
               method:"POST",
               headers: {'X-CSRFToken': '{{ csrf_token }}'},
-              data: JSON.stringify({'contour': annotation}),
+              data: JSON.stringify({
+                'action': "create_annotation",
+                'annotation': annotation
+              }),
               datatype: 'json'
           }).done(function(annotation){
             console.log(annotation)
         });
       });
+
+      // this is an attempt deleting the polygon format
+      anno.on('deleteAnnotation', function(annotation) {
+          $.ajax({
+              url:"",
+              method:"POST",
+              headers: {'X-CSRFToken': '{{ csrf_token }}'},
+              data: JSON.stringify({
+                'action': "delete_annotation",
+                'annotation': annotation.id
+              }),
+              datatype: 'json'
+          }).done(function(annotation){
+            console.log(annotation)
+        });
+      });
+
+      // this is an attempt deleting the polygon format
+      anno.on('updateAnnotation', function(annotation, previous) {
+          $.ajax({
+              url:"",
+              method:"POST",
+              headers: {'X-CSRFToken': '{{ csrf_token }}'},
+              data: JSON.stringify({
+                'action': "update_annotation",
+                'previous': previous.id
+                'annotation': annotation
+              }),
+              datatype: 'json'
+          }).done(function(annotation){
+            console.log(annotation)
+        });
   </script>
 {% endblock %}
