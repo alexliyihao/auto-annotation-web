@@ -157,12 +157,13 @@
               headers: {'X-CSRFToken': '{{ csrf_token }}'},
               data: JSON.stringify({
                 'action': "update_annotation",
-                'previous': previous.id
+                'previous': previous.id,
                 'annotation': annotation
               }),
               datatype: 'json'
           }).done(function(annotation){
             console.log(annotation)
         });
+      });
   </script>
 {% endblock %}

@@ -60,26 +60,26 @@ def image_views(request, image_id):
             # get the id need to be deleted
             delete_id = request['annotation']
             # find the instace to be deleted
-            anno_tbd = Annotation.object.get(W3C_id = delete_id)
+            anno_tbd = Annotation.objects.get(W3C_id = delete_id)
             # delete the instance
             anno_tbd.delete()
             return HttpResponse(f'annotation {delete_id} deleted')
-        elif action == 'updateAnnotation':
+        elif action == 'update_annotation':
             # This update will update at the original instance,
             # in order to control the primary key scale
             # get the id need to be deleted
             update_id = request['previous']
             # find the instance to be updated
-            anno_tbu = Annotation.object.get(W3C_id = update_id)
+            anno_tbu = Annotation.objects.get(W3C_id = update_id)
             # Save the corresponding informations
             anno_tbu.contour = request['annotation']
             # This additional id is used for edit and deletions
-            anno_tbu.W3C_id = f.contour['id']
+            anno_tbu.W3C_id = anno_tbu.contour['id']
             # The time is current time
             anno_tbu.update_date = timezone.now()
             # save the instance
             anno_tbu.save()
-            return HttpResponse(f'annotation {update_id} updated to {anno_tbu.W3C_id}')
+            return HttpResponse(f'annotation {anno_tbu.W3C_id} updated')
     # if we are getting it via get, it's reading
     else:
         try:
