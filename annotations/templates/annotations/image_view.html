@@ -1,12 +1,8 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+{% extends 'annotations/base.html' %}
 
-<head>
-    <meta charset="utf-8">
+{% block header %}
     <title>Imageview: {{image.image_name}} - AAAP</title>
-    <!-- website css -->
-    <link rel="stylesheet" type="text/css" href="{% static 'annotations/style.css' %}">
     <!-- OpenSeaDragon Annotorious css -->
     <link rel="stylesheet" href="{% static 'annotations/annotorious.min.css' %}">
     <!-- OpenSeaDragon -->
@@ -21,50 +17,9 @@
     <script src="{% static 'annotations/annotorious-selector-pack.min.js'%}"></script>
     <!-- jQuery-->
     <script src="{% static 'annotations/jquery.min.js'%}"></script>
-</head>
+{% endblock %}
 
-
-<body>
-  <!-- A sidebar listing functionalities -->
-  <div id="side_bar" class="SideBar">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <!-- Image List -->
-    <a href="{% url 'annotations:image-list' %}">Image List</a>
-    {% if user.is_authenticated %}
-      <!-- To be finished: User Profile -->
-      <a href="{% url 'annotations:profile'%}">Profile</a>
-      <!-- Image uploading page -->
-      <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
-    {% else %}
-      <!-- User Login -->
-      <a href="{% url 'annotations:login'%}">Login</a>
-      <!-- User Registration -->
-      <a href="{% url 'annotations:registration'%}">Registration</a>
-    {% endif %}    
-    <!-- Contact Page -->
-    <a href="{% url 'annotations:contact'%}">Contact</a>
-  </div>
-
-  <!-- the script for side bar menu -->
-  <script type="text/javascript">
-    /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
-    function openNav() {
-    document.getElementById("side_bar").style.width = "250px";
-    document.getElementById("title").style.marginLeft = "250px";
-    document.getElementById("title").style.width = "calc(100% - 250px)"
-    document.getElementById("body").style.marginLeft = "250px";
-    document.getElementById("body").style.width = "calc(100% - 250px)"
-    }
-
-    /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
-    function closeNav() {
-    document.getElementById("side_bar").style.width = "0";
-    document.getElementById("title").style.marginLeft = "0";
-    document.getElementById("title").style.width = "100%"
-    document.getElementById("body").style.marginLeft = "0";
-    document.getElementById("body").style.width = "100%"
-    }
-  </script>
+{% block content %}
 
   <div id='title' class='title'>
     <h1>Imageview: {{image_name}}</h1>
@@ -160,13 +115,13 @@
 
           viewer.addHandler('animation', updateZoom);
       });
-      
+
       anno.setAnnotations({{ annotation_set|safe }});
-      var django_csrf_token = '{{ csrf_token }}'; 
+      var django_csrf_token = '{{ csrf_token }}';
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {
           $.ajax({
-              url:"", 
+              url:"",
               method:"POST",
               headers: {'X-CSRFToken': '{{ csrf_token }}'},
               data: JSON.stringify({'contour': annotation}),
@@ -176,5 +131,4 @@
         });
       });
   </script>
-</body>
-</html>
+{% endblock %}
