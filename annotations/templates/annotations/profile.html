@@ -1,0 +1,58 @@
+{% extends 'annotations/base.html' %}
+
+{% block header %}
+<title>Profile:{{ username }} - AAAP</title>
+{% endblock %}
+
+{% block content %}
+    <!-- the title part -->
+    <div id='title' class='title'>
+      <h1>Profile:{{ username }}</h1>
+      <div id='login-widget' class='login-widget'>
+      {% if user.is_authenticated %}
+         <p>Welcome, {{ user.get_username }}.</p>
+         <a href="{% url 'annotations:logout' %}">[logout]</a>
+      {% else %}
+        <p>Welcome, new user.</p>
+        <a href="{% url 'annotations:login' %}" >[login]</a>
+        <a href="{% url 'annotations:registration' %}" >[register]</a>
+      {% endif %}
+      </div>
+      <button class="openbutton" onclick="openNav()">&#9776; Menu</button>
+    </div>
+
+    <!-- the body part -->
+    <div id='body' class='body'>
+      <table>
+        <tr>
+          <td>Username<td>
+          <td>{{ username }}<td>
+        </tr>
+        <tr>
+          <td>First Name<td>
+          <td>{{ firstname }}<td>
+        </tr>
+        <tr>
+          <td>Last Name<td>
+          <td>{{ lastname }}<td>
+        </tr>
+        <tr>
+          <td>UNI<td>
+          <td>{{ UNI }}<td>
+        </tr>
+        <tr>
+          <td>Email<td>
+          <td>{{ email }}<td>
+        </tr>
+        <tr>
+          <td>Organization<td>
+          <td>{{ organization }}<td>
+        </tr>
+        <tr>
+          <td>register_date<td>
+          <td>{{ register_date }}<td>
+        </tr>
+      </table>
+    </div>
+  </div>
+{% endblock %}

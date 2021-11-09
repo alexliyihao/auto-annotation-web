@@ -1,15 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse,reverse_lazy
 from django.conf import settings
-from .models import Image, User, Annotation
-from django.views import generic
-from django.contrib.auth.forms import UserCreationForm
-from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm, AnnotationCreateform
-from datetime import datetime
-import subprocess
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
+from django.views import generic
+
+import pytz
+import subprocess
 import json
+
+from .models import Image, User, Annotation
+from .forms import UserRegistrationForm, ImageUploadForm, UserLoginForm, AnnotationCreateform
 
 class ImageListView(generic.ListView):
     '''
@@ -19,15 +22,10 @@ class ImageListView(generic.ListView):
     context_object_name = 'image_list'
 
     def get_queryset(self):
-        """return the image-list """
+        """
+        helper function returning the image-list
+        """
         return Image.objects.order_by('-submission_date')
-#def image_list(request):
-    # get the image ordered by submission_date
-#    image_list = Image.objects.order_by('-submission_date')
-    # pass the imagelist to the file
-#    context = {'image_list': image_list}
-    # render the template
-#    return render(request, 'annotations/image_list.html', context)
 
 def image_views(request, image_id):
     '''
@@ -35,44 +33,45 @@ def image_views(request, image_id):
     '''
     # if we are getting it via post, it's editing
     if request.method == 'POST':
+        # init a form
         form = AnnotationCreateform(request.POST)
+        # this contour is sent from a ajax post request
         request_contour = json.loads(request.body.decode("utf-8"))
+        # create a form instance
         f = form.save(commit = False)
+        # Save the corresponding informations
         f.contour = request_contour
-        f.update_date = datetime.now()
+        f.update_date = timezone.now()
+        # The image belonging is grabbed from the image_id
         f.image = Image.objects.get(pk = image_id)
+        # The user is the user submitting the request
         f.annotator = User.objects.get(username=request.user.username)
+        # saving the files
         f.save()
-        return JsonResponse(request_contour, safe = False) 
+        return JsonResponse(request_contour, safe = False)
     # if we are getting it via get, it's reading
     else:
         try:
-            # find the Image by image_id, or throw a 404 error
+            # find the Image by image_id
             image = Image.objects.get(pk = image_id)
             # Scan the annotation set for the annotation on this image
-            # for it's returning a QuerySet object, translate it into array with only the Json format
+            # for it's returning a QuerySet object, translate it into array with the Json format
             annotation_set = json.dumps([i.contour["contour"] for i in Annotation.objects.filter(image = image).iterator()])
-            #please be noticed that file_path is only for debugging purpose, to be corrected
+            # please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
-                            request,
-                            'annotations/image_view.html',
-                            {
-                                'image_id':image.id,
-                                'image_name': image.image_name,
-                                'image_path':image.dzi_path.replace("home/alexliyihao/",""),
-                                'filepath':'/dzis/',
-                                'annotation_set': annotation_set
-                            }
-                        )
+                        request,
+                        'annotations/image_view.html',
+                        {
+                            'image_id':image.id,
+                            'image_name': image.image_name,
+                            'image_path':image.dzi_path.replace("home/alexliyihao/",""),
+                            'filepath':'/dzis/',
+                            'annotation_set': annotation_set
+                        }
+                    )
         except(KeyError, Image.DoesNotExist):
             return HttpResponseRedirect(reverse('annotations:image-list'))
-
-
-#Deprecated for image_view settings
-#class ImageViewsView(generic.DetailView):
-#   model = Image
-#   template_name = 'annotations/image_view.html'
 
 class RegistrationView(generic.edit.CreateView):
     '''
@@ -81,9 +80,13 @@ class RegistrationView(generic.edit.CreateView):
     template_name = 'annotations/registration.html'
     form_class = UserRegistrationForm
     success_url = reverse_lazy('annotations:regi-success')
+
     def form_valid(self, form):
+        '''
+        helper function adding the register_date
+        '''
         f = form.save(commit = False)
-        f.register_date = datetime.now()
+        f.register_date = timezone.now()
         f.save()
         return super().form_valid(form)
 
@@ -93,44 +96,52 @@ def registration_success_views(request):
     '''
     return render(request, "annotations/registration_success.html")
 
-def handle_uploaded_file(file, des_path):
-    """
-    helper function of image_uploading_views dealing with large svs files,
-    left here for checking
-    """
-    with open(def_path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+#def handle_uploaded_file(file, des_path):
+#    """
+#    helper function of image_uploading_views dealing with large svs files,
+#    left here for checking, not using yet
+#    """
+#    with open(def_path, 'wb+') as destination:
+#        for chunk in f.chunks():
+#            destination.write(chunk)
 
 def image_upload_views(request):
     '''
     The view for page image_upload, for upload a new file
     '''
+    # A post request is uploading a image
     if request.method == "POST":
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            # Init a form
             f = form.save(commit = False)
-            f.submission_date = datetime.now()
-            f.svs_path = f"svss/{f.image_name}.svs"
-            f.dzi_path = f"dzis/{f.image_name}.dzi"
-            # openslide has poor support with python3.5+, so run it from external scripts
+            # save the submission_date
+            f.submission_date = timezone.now()
+            # This path is subject to change in actual deployment
+            f.svs_path = f"home/alexliyihao/svss/{f.image_name}.svs"
+            f.dzi_path = f"home/alexliyihao/dzis/{f.image_name}.dzi"
+            # openslide has poor support with python3.6+, run from external scripts
             dimensions = subprocess.check_output([
                                     "python3.5",
                                     "../ext_script/dimensions.py",
-                                    "../svss/test.svs"
+                                    f"../svss/{f.image_name}.svs"
                                     ])
             # interpret the result, the last character is newline character
             f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
+            # completely_annotated tag set to false
             f.completely_annotated = False
+            # translated set to false
             f.translated = False
+            # save everything
             f.save()
-            # after the file is uploaded, run a translation procedure,
+            # after the file is uploaded, run a translation procedure saving svs into dzis
             # It works internally as long as the server is not interrupted
-            # TBD: how to update the translated and the svs/dzi path?
             subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
+            # TBD: how to update the translated and the svs/dzi path later?
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
             print(form.errors)
+    # when using a get method, render the page
     else:
         form = ImageUploadForm()
     return render(request, 'annotations/image_upload.html', {'form': form})
@@ -173,3 +184,20 @@ def contact_view(request):
     The view for page contact, for contact page
     '''
     return render(request, "annotations/contact.html")
+
+def user_profile_view(request):
+    """
+    The view for user profile, for user's profile page
+    """
+    # get the user's instance from username(login system)
+    user = User.objects.get(username=request.user.username)
+    user_info = {
+      "username": user.username,
+      "firstname": user.first_name,
+      "lastname": user.last_name,
+      "UNI": user.UNI,
+      "email": user.email,
+      "organization": user.organizations,
+      "register_date": user.register_date,
+    }
+    return render(request, "annotations/profile.html", user_info)

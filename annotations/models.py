@@ -41,7 +41,10 @@ class ImageGroup(models.Model):
 
 
 def svs_rename(instance, filename):
-    return f"svss/{instance.image_name}.svs"
+    '''
+    The svs rename helper function determining the saving name
+    '''
+    return f"home/alexliyihao/svss/{instance.image_name}.svs"
 
 class Image(models.Model):
     """
