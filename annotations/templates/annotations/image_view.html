@@ -30,10 +30,17 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <!-- Image List -->
     <a href="{% url 'annotations:image-list' %}">Image List</a>
-    <!-- To be finished: User Profile -->
-    <a href="#">Profile</a>
-    <!-- Image uploading page -->
-    <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
+    {% if user.is_authenticated %}
+      <!-- To be finished: User Profile -->
+      <a href="{% url 'annotations:profile'%}">Profile</a>
+      <!-- Image uploading page -->
+      <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
+    {% else %}
+      <!-- User Login -->
+      <a href="{% url 'annotations:login'%}">Login</a>
+      <!-- User Registration -->
+      <a href="{% url 'annotations:registration'%}">Registration</a>
+    {% endif %}    
     <!-- Contact Page -->
     <a href="{% url 'annotations:contact'%}">Contact</a>
   </div>

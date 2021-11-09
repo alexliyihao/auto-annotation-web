@@ -40,7 +40,9 @@ def image_views(request, image_id):
         # create a form instance
         f = form.save(commit = False)
         # Save the corresponding informations
-        f.contour = request_contour
+        f.contour = request_contour['contour']
+        # This additional id is used for edit and deletions
+        f.W3C_id = f.contour['id']
         f.update_date = timezone.now()
         # The image belonging is grabbed from the image_id
         f.image = Image.objects.get(pk = image_id)
@@ -55,8 +57,8 @@ def image_views(request, image_id):
             # find the Image by image_id
             image = Image.objects.get(pk = image_id)
             # Scan the annotation set for the annotation on this image
-            # for it's returning a QuerySet object, translate it into array with the Json format
-            annotation_set = json.dumps([i.contour["contour"] for i in Annotation.objects.filter(image = image).iterator()])
+            # Filter returns a QuerySet object, translate it into array with the Json format
+            annotation_set = json.dumps([i.contour for i in Annotation.objects.filter(image = image).iterator()])
             # please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
@@ -117,9 +119,17 @@ def image_upload_views(request):
             f = form.save(commit = False)
             # save the submission_date
             f.submission_date = timezone.now()
+            # completely_annotated tag set to false
+            f.completely_annotated = False
+            # translated set to false
+            f.translated = False
+            # the user submit the image
+            f.submit_user = User.objects.get(username=request.user.username)
+            # save everything
+            f.save()
             # This path is subject to change in actual deployment
-            f.svs_path = f"home/alexliyihao/svss/{f.image_name}.svs"
-            f.dzi_path = f"home/alexliyihao/dzis/{f.image_name}.dzi"
+            f.svs_path = f"/home/alexliyihao/svss/{f.image_name}.svs"
+            f.dzi_path = f"/home/alexliyihao/dzis/{f.image_name}.dzi"
             # openslide has poor support with python3.6+, run from external scripts
             dimensions = subprocess.check_output([
                                     "python3.5",
@@ -128,16 +138,11 @@ def image_upload_views(request):
                                     ])
             # interpret the result, the last character is newline character
             f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
-            # completely_annotated tag set to false
-            f.completely_annotated = False
-            # translated set to false
-            f.translated = False
-            # save everything
             f.save()
             # after the file is uploaded, run a translation procedure saving svs into dzis
             # It works internally as long as the server is not interrupted
-            subprocess.Popen(['vips', 'dzsave', f"../{f.svs_path}",f'../dzis/{f.image_name}'])
-            # TBD: how to update the translated and the svs/dzi path later?
+            subprocess.Popen(['vips', 'dzsave', f"{f.svs_path}",f'/home/alexliyihao/dzis/{f.image_name}'])
+            # TBD: how to update the translated tag later?
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
             print(form.errors)
