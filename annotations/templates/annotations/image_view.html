@@ -121,6 +121,17 @@
       // When a GET request loading the page, load all the annotations on this Image
       anno.setAnnotations({{ annotation_set|safe }});
 
+      // Paint the annotations with different colors
+      for (const [w3c_id, annotation_color] of Object.entries(annotation_class)) {
+        // select the g object with the corresponding w3c_id
+        var g_parent = document.body.querySelector('.element[data-id="'+ w3c_id +'"]');
+        // find it's children (2 svg objects)
+        var annotations = g_parent.querySelector('.child');
+        // change the color into the color needed
+        annotations.style.stroke = annotation_color;
+        annotations.style.fill = annotation_color
+      }
+
       // this crsf token is for the POST requests
       var django_csrf_token = '{{ csrf_token }}';
       // this is an attempt outputting the polygon format

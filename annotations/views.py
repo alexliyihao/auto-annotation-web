@@ -28,6 +28,13 @@ class ImageListView(generic.ListView):
         """
         return Image.objects.order_by('-submission_date')
 
+COLOR_MAP = {
+    "Glomerulus": 'red',
+    'Arteries': "yellow",
+    'Tubules': 'lightgreen',
+    'Interstitium': 'lightblue'
+}
+
 def image_views(request, image_id):
     '''
     The view for page image_view, for detailed annotations on a specific image
@@ -80,7 +87,7 @@ def image_views(request, image_id):
             # The type of annotation
             anno_tbu.annotation_class = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'tagging'][0]
             # The description
-            anno_tbu.description = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'commenting'][0]            
+            anno_tbu.description = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'commenting'][0]
             # This additional id is used for edit and deletions
             anno_tbu.W3C_id = anno_tbu.contour['id']
             # The time is current time
@@ -91,11 +98,15 @@ def image_views(request, image_id):
     # if we are getting it via get, it's reading
     else:
         try:
+
             # find the Image by image_id
             image = Image.objects.get(pk = image_id)
             # Scan the annotation set for the annotation on this image
-            # Filter returns a QuerySet object, translate it into array with the Json format
-            annotation_set = json.dumps([i.contour for i in Annotation.objects.filter(image = image).iterator()])
+            # Filter returns a QuerySet object,
+            annotation_query = Annotation.objects.filter(image = image).iterator()
+            # translate it into array with the Json format
+            annotation_set = json.dumps([i.contour for i in annotation_query])
+            annotation_color = json.dumps({i.W3C_id: COLOR_MAP[i.annotation_class] for i in annotation_query})
             # please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
@@ -106,7 +117,8 @@ def image_views(request, image_id):
                             'image_name': image.image_name,
                             'image_path':image.dzi_path.replace("home/alexliyihao/",""),
                             'filepath':'/dzis/',
-                            'annotation_set': annotation_set
+                            'annotation_set': annotation_set,
+                            'annotation_color': annotation_color
                         }
                     )
         except(KeyError, Image.DoesNotExist):
