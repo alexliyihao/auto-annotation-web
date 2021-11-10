@@ -35,18 +35,22 @@ def image_views(request, image_id):
     # if we are getting it via post, it's editing
     if request.method == 'POST':
         # get request from a ajax post request
-        request = json.loads(request.body.decode("utf-8"))
+        request_body = json.loads(request.body.decode("utf-8"))
         # get the action from the request
-        action = request['action']
+        action = request_body['action']
         if action == 'create_annotation':
             # init a form
             form = AnnotationCreateform(request.POST)
             # create a form instance
             f = form.save(commit = False)
-            # Save the corresponding informations
-            f.contour = request['annotation']
+            # Save the corresponding informations, this wordy one is for re-rendering
+            f.contour = request_body['annotation']
             # This additional id is used for edit and deletions
             f.W3C_id = f.contour['id']
+            # The type of annotation
+            f.annotation_class = [info['value'] for info in f.contour["body"] if info['purpose']=='tagging'][0]
+            # The description
+            f.description = [info['value'] for info in f.contour["body"] if info['purpose'] =='commenting'][0]
             # The time is current time
             f.update_date = timezone.now()
             # The image belonging is grabbed from the image_id
@@ -58,7 +62,7 @@ def image_views(request, image_id):
             return HttpResponse(f'annotation {f.W3C_id} saved')
         elif action == 'delete_annotation':
             # get the id need to be deleted
-            delete_id = request['annotation']
+            delete_id = request_body['annotation']
             # find the instace to be deleted
             anno_tbd = Annotation.objects.get(W3C_id = delete_id)
             # delete the instance
@@ -68,11 +72,15 @@ def image_views(request, image_id):
             # This update will update at the original instance,
             # in order to control the primary key scale
             # get the id need to be deleted
-            update_id = request['previous']
+            update_id = request_body['previous']
             # find the instance to be updated
             anno_tbu = Annotation.objects.get(W3C_id = update_id)
             # Save the corresponding informations
-            anno_tbu.contour = request['annotation']
+            anno_tbu.contour = request_body['annotation']
+            # The type of annotation
+            anno_tbu.annotation_class = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'tagging'][0]
+            # The description
+            anno_tbu.description = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'commenting'][0]            
             # This additional id is used for edit and deletions
             anno_tbu.W3C_id = anno_tbu.contour['id']
             # The time is current time

@@ -18,7 +18,8 @@ admin.site.register(Image, ImageAdmin)
 
 class AnnotationAdmin(admin.ModelAdmin):
     fields = [
-        'W3C_id','contour','update_date' ,"image","annotator"
+        'W3C_id','annotation_class','contour','update_date',
+        "image","annotator", 'description'
         ]
 
 admin.site.register(Annotation, AnnotationAdmin)
