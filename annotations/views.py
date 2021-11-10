@@ -54,10 +54,18 @@ def image_views(request, image_id):
             f.contour = request_body['annotation']
             # This additional id is used for edit and deletions
             f.W3C_id = f.contour['id']
-            # The type of annotation
-            f.annotation_class = [info['value'] for info in f.contour["body"] if info['purpose']=='tagging'][0]
+            # The type of annotation,
+            # try is to catch the scenario that the class is no declared, it will be null
+            try:
+                f.annotation_class = [info['value'] for info in f.contour["body"] if info['purpose']=='tagging'][0]
+            except:
+                pass
             # The description
-            f.description = [info['value'] for info in f.contour["body"] if info['purpose'] =='commenting'][0]
+            # try is to catch the scenario that there's no description, it will be ""
+            try:
+                f.description = [info['value'] for info in f.contour["body"] if info['purpose'] =='commenting'][0]
+            except:
+                f.description = ""
             # The time is current time
             f.update_date = timezone.now()
             # The image belonging is grabbed from the image_id
@@ -85,9 +93,17 @@ def image_views(request, image_id):
             # Save the corresponding informations
             anno_tbu.contour = request_body['annotation']
             # The type of annotation
-            anno_tbu.annotation_class = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'tagging'][0]
+            # try is to catch the scenario that the class is no declared, it will be null
+            try:          
+                anno_tbu.annotation_class = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'tagging'][0]
+            except:
+                pass
             # The description
-            anno_tbu.description = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'commenting'][0]
+            # try is to catch the scenario that there's no description, it will be ""
+            try:
+                anno_tbu.description = [info['value'] for info in anno_tbu.contour["body"] if info['purpose'] == 'commenting'][0]
+            except:
+                anno_tbu.description = ""
             # This additional id is used for edit and deletions
             anno_tbu.W3C_id = anno_tbu.contour['id']
             # The time is current time
