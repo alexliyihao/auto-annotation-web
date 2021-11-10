@@ -103,10 +103,11 @@ def image_views(request, image_id):
             image = Image.objects.get(pk = image_id)
             # Scan the annotation set for the annotation on this image
             # Filter returns a QuerySet object,
-            annotation_query = Annotation.objects.filter(image = image).iterator()
+            annotation_query = Annotation.objects.filter(image = image)
             # translate it into array with the Json format
-            annotation_set = json.dumps([i.contour for i in annotation_query])
-            annotation_color = json.dumps({i.W3C_id: COLOR_MAP[i.annotation_class] for i in annotation_query})
+            annotation_set = json.dumps([i.contour for i in annotation_query.iterator()])
+            # translate the color each annotations should be by COLOR_MAP
+            annotation_class = json.dumps({i.W3C_id: i.annotation_class for i in annotation_query.iterator()})
             # please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
@@ -118,7 +119,8 @@ def image_views(request, image_id):
                             'image_path':image.dzi_path.replace("home/alexliyihao/",""),
                             'filepath':'/dzis/',
                             'annotation_set': annotation_set,
-                            'annotation_color': annotation_color
+                            'annotation_class': annotation_class,
+                            'COLOR_MAP': COLOR_MAP
                         }
                     )
         except(KeyError, Image.DoesNotExist):

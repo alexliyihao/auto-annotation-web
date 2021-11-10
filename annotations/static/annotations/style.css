@@ -216,10 +216,7 @@ li{
 svg.a9s-annotationlayer .a9s-selection .a9s-outer,
 svg.a9s-annotationlayer .a9s-annotation .a9s-outer {
   stroke-width:2;
-  stroke:white;
   stroke-opacity:75%;
-  fill:white;
-  fill-opacity:50%
 }
 
 svg.a9s-annotationlayer .a9s-handle .a9s-handle-outer {
@@ -229,10 +226,8 @@ svg.a9s-annotationlayer .a9s-handle .a9s-handle-outer {
 svg.a9s-annotationlayer .a9s-selection .a9s-inner,
 svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
   stroke-width:2;
-  stroke:white;
   stroke-opacity:75%;
-  fill:white;
-  fill-opacity:50%
+  fill-opacity:50%;
 }
 
 /** Disable the hover effect from the default stylesheet **/
