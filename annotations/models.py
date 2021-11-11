@@ -1,67 +1,111 @@
 from django.db import models
 from django.contrib.auth.models import User as auth_user
+from django.conf import settings
 
 class User(auth_user):
     """
-    individual user entity, it inherits the username,
-    password, first name, last name, and email from django.contrib.auth.models.User
+    individual user entity, it inherits the "username", "password",
+    "first name", "last name", and "email" from django.contrib.auth.models.User
     """
     # UNI
-    UNI = models.CharField(max_length = 8, unique=True)
+    UNI = models.CharField(
+        max_length = 8,
+        unique = True
+        )
     # The date user registered
-    register_date = models.DateTimeField('date of registration', blank = True)
+    register_date = models.DateTimeField(
+        'date of registration',
+        auto_now_add = True,
+        blank = True
+        )
     # The organization this user belongs to
-    organizations = models.ForeignKey('Organization', on_delete=models.PROTECT,null = True, blank = True)
+    organizations = models.ForeignKey(
+        'Organization',
+        on_delete = models.PROTECT,
+        null = True,
+        blank = True
+        )
     def __str__(self):
       return f"{self.UNI} - {self.first_name} {self.last_name}"
 
+
 class Organization(models.Model):
     """
-    Organization identity
+    Organization identity, which is for batch management for Users
     """
     # The name of the organization
-    organization_name = models.CharField(max_length = 40, unique=True)
+    organization_name = models.CharField(
+        max_length = 40,
+        unique = True
+        )
     # The supervisor of the organization
-    supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank = True)
+    supervisor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null = True,
+        blank = True
+        )
+    # the description of the organization
+    description = models.TextField(blank = True, null = True)
 
     def __str__(self):
       return self.organization_name
+
 
 class ImageGroup(models.Model):
     """
     The group of whole slide image group, for management purpose
     """
     # The name of this group
-    group_name = models.CharField(max_length = 200, unique=True)
+    group_name = models.CharField(
+        max_length = 40,
+        unique = True
+        )
     # The description to this group
-    group_description = models.TextField()
+    group_description = models.TextField(blank = True, null = True)
 
     def __str__(self):
       return self.group_name
-
 
 def svs_rename(instance, filename):
     '''
     The svs rename helper function determining the saving name
     '''
-    return f"svss/{instance.image_name}.svs"
+    return f"{settings.SVS_PATH}/{instance.image_name}.svs"
 
 class Image(models.Model):
     """
     The whole slide image identity
     """
     # Name of the image
-    image_name = models.CharField(max_length = 200, unique=True)
+    image_name = models.CharField(
+        max_length = 200,
+        unique = True
+        )
     # The date submitted
-    submission_date = models.DateTimeField('date of submission')
+    submission_date = models.DateTimeField(
+        'date of submission',
+        auto_now_add = True
+        )
+
     # The upload specific field for uploading
     image_upload = models.FileField(upload_to = svs_rename)
     # The upload specific field as traslating indicator
-    translated = models.BooleanField(default= 'False')
+    translated = models.BooleanField(default = 'False')
     # The path of Aperio SVS file(original file)
-    svs_path = models.FilePathField(path = "/home/alexliyihao/svss", match = ".*\.svs", null = True, blank = True)
+    svs_path = models.FilePathField(
+        path = f"{settings.HOME_PATH}/{settings.SVS_PATH}",
+        match = ".*\.svs",
+        null = True,
+        blank = True
+        )
     # The path of Deep Zoom Image(dzi) file generated from svs file
-    dzi_path = models.FilePathField(path = "/home/alexliyihao/dzis", match = ".*\.dzi", null = True, blank = True)
+    dzi_path = models.FilePathField(
+        path = f"{settings.HOME_PATH}/{settings.DZI_PATH}",
+        match = ".*\.dzi",
+        null = True,
+        blank = True
+        )
     # The height of the SVS file
     height = models.PositiveIntegerField(null = True, blank = True)
     # The width of the SVS file
@@ -71,9 +115,19 @@ class Image(models.Model):
     # The boolean variable indicate if the image is fully annotated
     completely_annotated = models.BooleanField(default = 'False')
     # The group this image belongs to
-    group = models.ForeignKey(ImageGroup, on_delete=models.SET_NULL, blank = True, null = True)
+    group = models.ForeignKey(
+        ImageGroup,
+        on_delete = models.SET_NULL,
+        blank = True,
+        null = True
+        )
     # The user who submit this image
-    submit_user = models.ForeignKey(User, on_delete=models.PROTECT, blank = True, null = True)
+    submit_user = models.ForeignKey(
+        User,
+        on_delete = models.PROTECT,
+        blank = True,
+        null = True
+        )
 
     def __str__(self):
        return self.image_name
@@ -83,23 +137,36 @@ class Annotation(models.Model):
     """
     Each individual annotation entity
     """
-    ANNNOTATION_CLASS = [('Glomerulus', 'Glomerulus'), 
-                         ('Arteries', 'Arteries'), 
-                         ('Tubules', 'Tubules'),
-                         ('Interstitium', 'Interstitium')
-                        ] 
     # The id of this annotation, generated by annotorious
     W3C_id = models.CharField(max_length = 150, blank = True)
     # The class of the annotation
-    annotation_class = models.CharField(max_length = 20, choices = ANNNOTATION_CLASS, blank = True, null = True)
+    annotation_class = models.CharField(
+        max_length = 20,
+        choices = settings.ANNNOTATION_CLASS,
+        blank = True,
+        null = True
+        )
     # The contour of the annotation
     contour = models.JSONField(blank = True)
     # The date this annotation is updated
-    update_date = models.DateTimeField('date submit this annotation', blank = True)
+    update_date = models.DateTimeField(
+        'date submit this annotation',
+        auto_now = True,
+        blank = True
+        )
     # The image it belongs to
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, blank = True)
+    image = models.ForeignKey(
+        Image,
+        on_delete=models.CASCADE,
+        blank = True,
+        null = False
+        )
     # The user who submitted this annotation
-    annotator = models.ForeignKey(User, on_delete=models.PROTECT, blank = True)
+    annotator = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        blank = True
+        )
     # The description
     description = models.TextField(blank = True)
     def __str__(self):

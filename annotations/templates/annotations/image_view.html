@@ -1,7 +1,7 @@
 {% extends 'annotations/base.html' %}
 {% load static %}
 {% block header %}
-    <title>Imageview: {{image.image_name}} - AAAP</title>
+    <title>Imageview: {{image_name}} - AAAP</title>
     <!-- OpenSeaDragon Annotorious css -->
     <link rel="stylesheet" href="{% static 'annotations/annotorious.min.css' %}">
     <!-- OpenSeaDragon -->
@@ -35,7 +35,7 @@
     <button class="openbutton" onclick="openNav()">&#9776; Menu</button>
   </div>
   <!-- this div is used for debugging, meanwhile tracking the mouse-->
-  <div id='body' class='body', style = "top:15%">
+  <div id='body' class='body'>
   <div id="annotorious-toolbar"></div>
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
@@ -62,34 +62,35 @@
               'COMMENT',
               {
                 widget: 'TAG',
-                vocabulary: [ 'Glomerulus', 'Tubules', 'Arteries', 'interstitium']
+                vocabulary: [
+                'Glomerulus',
+                'Tubules',
+                'Arteries',
+                'Interstitium',
+                'Undecided'
+                ]
               }
           ]
       };
 
       //register the viewer and the configuration to Annotorious
       var anno = OpenSeadragon.Annotorious(viewer, config);
-
       //register Better Polygon
       Annotorious.BetterPolygon(anno);
-
       //Add Selector Pack
       Annotorious.SelectorPack(anno);
-
       //add a toolbar to the openseadragon viewer
       Annotorious.Toolbar(anno, document.getElementById('annotorious-toolbar'));
-
       // When a GET request loading the page, load all the annotations on this Image
       anno.setAnnotations({{ annotation_set|safe }});
-      
+
       function paint_annotation(w3c_id, anno_class, COLOR_MAP){
         // select the g object with the corresponding w3c_id
-        var g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]')
-;
+        var g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]');
         // find it's children (2 svg objects)
         var outer = g_parent.getElementsByClassName("a9s-outer")[0];
         var inner = g_parent.getElementsByClassName("a9s-inner")[0];
-        // calculate the color 
+        // calculate the color
         var color = COLOR_MAP[anno_class];
         // change the color into the color needed
         outer.style.stroke = color;
@@ -124,7 +125,11 @@
           }).done(function(annotation){
             console.log(annotation)
         });
-        paint_annotation(w3c_id=annotation.id, anno_class=get_class(annotation), COLOR_MAP={{COLOR_MAP|safe}});
+        paint_annotation(
+          w3c_id=annotation.id,
+          anno_class=get_class(annotation),
+          COLOR_MAP={{COLOR_MAP|safe}}
+        );
       });
 
       // this is an attempt deleting the polygon format
@@ -158,7 +163,11 @@
           }).done(function(annotation){
             console.log(annotation)
           });
-          paint_annotation(w3c_id=annotation.id, anno_class=get_class(annotation), COLOR_MAP={{COLOR_MAP|safe}});
+          paint_annotation(
+            w3c_id=annotation.id,
+            anno_class=get_class(annotation),
+            COLOR_MAP={{COLOR_MAP|safe}}
+          );
       });
   </script>
 {% endblock %}

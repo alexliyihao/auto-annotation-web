@@ -29,8 +29,8 @@ div#title.title {
   left:0px;
   height:calc(10% + 39px);
   width: 100%;
-  transition: margin-left .8s;
-  transition: width .8s;
+  transition: margin-left .3s;
+  transition: width .3s;
   display: flex;
   flex: 1 1 auto;
   justify-content: flex-start;
@@ -59,7 +59,7 @@ div#title.title {
   background-color: #111; /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.8s; /* 0.8 second transition effect to slide in the sidebar */
+  transition: 0.3s; /* 0.3 second transition effect to slide in the sidebar */
 }
 
 /* The sidebar links */
@@ -69,7 +69,7 @@ div#title.title {
   font-size: 25px;
   color: gray;
   display: block;
-  transition: 0.8s;
+  transition: 0.3s;
 }
 
 /* When you mouse over the navigation links, change their color */
@@ -114,8 +114,8 @@ div#body.body {
   height: 85%;
   width: 100%;
   background-color: white;
-  transition: margin-left .8s;
-  transition: width .8s;
+  transition: margin-left .3s;
+  transition: width .3s;
   display: flex;
   flex: 1 1 auto;
   flex-direction:column;
@@ -199,10 +199,10 @@ select {
   color: black;
 }
 .body a:hover{
-  color: black;
+  color: blue;
 }
 .body a:active{
-  color: blue;
+  color: lightblue;
 }
 /* general li */
 li{

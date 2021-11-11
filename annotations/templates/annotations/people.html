@@ -1,0 +1,68 @@
+{% extends 'annotations/base.html' %}
+
+{% block header %}
+<title>People - AAAP</title>
+{% endblock %}
+
+{% block content %}
+    <!-- the title part -->
+    <div id='title' class='title'>
+      <h1>People</h1>
+      <div id='login-widget' class='login-widget'>
+      {% if user.is_authenticated %}
+         <p>Welcome, {{ user.get_username }}.</p>
+         <a href="{% url 'annotations:logout' %}">[logout]</a>
+      {% else %}
+        <p>Welcome, new user.</p>
+        <a href="{% url 'annotations:login' %}" >[login]</a>
+        <a href="{% url 'annotations:registration' %}" >[register]</a>
+      {% endif %}
+      </div>
+      <button class="openbutton" onclick="openNav()">&#9776; Menu</button>
+    </div>
+
+    <!-- the body part -->
+    <div id='body' class='body'>
+      <table>
+        <tr>
+          <th><p>Organization</p></th>
+          <th><p>Position</p></th>
+          <th><p>Name</p></th>
+          <th><p>UNI</p></th>
+          <th><p>Email</p></th>
+          <th><p>Register Date</p></th>
+        </tr>
+        {% if supervisor_list %}
+        {% for supervisor in supervisor_list%}
+        <tr>
+          <td><a href="{% url 'annotations:organization-view-others' supervisor.organizations.id %}">
+            {{supervisor.organizations}}
+          </a></td>
+          <td><p>Supervisor</p></td>
+          <td><a href="{% url 'annotations:profile-others' supervisor.id %}">
+            {{supervisor.first_name}} {{supervisor.last_name}}
+          </a></td>
+          <td><p>{{supervisor.UNI}}</p></td>
+          <td><p>{{supervisor.email}}</p></td>
+          <td><a>{{supervisor.register_date}}</a></td>
+          {% endfor %}
+         </tr>
+        {% endif %}
+        <!-- Each individual image will take a line -->
+        {% for members in member_list%}
+          <tr>
+            <td><a href="{% url 'annotations:organization-view-others' members.organizations.id %}">
+              {{members.organizations}}
+            </a></td>
+            <td><p>Member</p></td>
+            <td><a href="{% url 'annotations:profile-others' members.id %}">
+              {{members.first_name}} {{members.last_name}}
+            </a></td>
+            <td><p>{{members.UNI}}</p></td>
+            <td><p>{{members.email}}</p></td>
+            <td><a>{{members.register_date}}</a></td>
+           </tr>
+        {% endfor %}
+      </table>
+    </div>
+{% endblock %}

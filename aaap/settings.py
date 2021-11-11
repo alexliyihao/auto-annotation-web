@@ -19,9 +19,36 @@ mimetypes.add_type("text/css", ".css", True)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 FILES_DIR = os.path.abspath(os.path.join(BASE_DIR, '../'))
+
 # This media folder is for debugging mode, to be corrected
 MEDIA_ROOT = FILES_DIR
 MEDIA_URL  = '/dzis/'
+
+# Constants and settings
+# The mapping from class to color rendering on the web page
+COLOR_MAP = {
+    "Glomerulus": 'red',
+    'Arteries': "yellow",
+    'Tubules': 'lightgreen',
+    'Interstitium': 'lightblue',
+    'undecided': 'white'
+}
+
+ANNNOTATION_CLASS = [('Glomerulus', 'Glomerulus'),
+                     ('Arteries', 'Arteries'),
+                     ('Tubules', 'Tubules'),
+                     ('Interstitium', 'Interstitium'),
+                     ('Undecided', 'Undecided')
+                    ]
+
+# The "~" path, current setting is on the GCP VM
+HOME_PATH = "/home/alexliyihao"
+# The path saving all the dzi files, which is right in HOME_PATH
+DZI_PATH = 'dzis'
+# The path saving all the svs files, which is right in HOME_PATH
+SVS_PATH = 'svss'
+# The path saving all the external scripts, which is right in HOME_PATH
+EXT_SCRIPT_PATH = "ext_script"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

@@ -1,14 +1,13 @@
 {% extends 'annotations/base.html' %}
 
 {% block header %}
-<title>Image List - AAAP</title>
+<title>Image Group: {{image_group.group_name}} - AAAP</title>
 {% endblock %}
 
 {% block content %}
-  {% if image_list %}
     <!-- the title part -->
     <div id='title' class='title'>
-      <h1>Image List</h1>
+      <h1>Image Group: {{image_group.group_name}}</h1>
       <div id='login-widget' class='login-widget'>
       {% if user.is_authenticated %}
          <p>Welcome, {{ user.get_username }}.</p>
@@ -24,11 +23,13 @@
 
     <!-- the body part -->
     <div id='body' class='body'>
+      <div class="Introduction">
+        <p>{{image_group.group_description}}</p>
+      </div>
       <table>
         <tr>
           <th><p>Image ID</p></th>
           <th><p>Image Name</p></th>
-          <th><p>Group</p></th>
           <th><p>Submitter</p></th>
           <th><p>Submission Time</p></th>
           <th><p>Translated</p></th>
@@ -40,16 +41,17 @@
             <!-- image name will link to the OpenSeadragon page -->
             <td>
             {% if image.translated %}
-               <a href="{% url 'annotations:image-views' image.id %}">{{ image.image_name }}
+               <a href="{% url 'annotations:image-views' image.id %}">
+                 {{ image.image_name }}
                </a>
             {% else %}
                <p>{{image.image_name}}</p>
             {% endif %}
             </td>
-            <!-- TBF: the Image group page -->
-            <td><a href="{% url 'annotations:image-group-view' image.group.id %}"> {{ image.group }} </a></td>
             <!-- TBF: the user page -->
-            <td><a href="{% url 'annotations:profile-others' image.submit_user.id %}"> {{ image.submit_user }}</a></td>
+            <td><a href="{% url 'annotations:profile-others' image.submit_user.id %}">
+              {{ image.submit_user }}
+            </a></td>
             <!-- TBF: a fliter(?) w.r.t. the date-->
             <td><p> {{ image.submission_date }}</p></td>
             <!-- the indicator that the image is translatted or not -->
@@ -58,10 +60,4 @@
         {% endfor %}
       </table>
     </div>
-  {% else %}
-    <div id='title' class = "title">
-      <h1>No images are available.</h1>
-    </div>
-  {% endif %}
-  </div>
 {% endblock %}

@@ -33,4 +33,4 @@ class AnnotationCreateform(forms.ModelForm):
     '''
     class Meta:
         model = Annotation
-        fields = ['contour','update_date', "image", "annotator"]
+        fields = ['contour', "image", "annotator"]

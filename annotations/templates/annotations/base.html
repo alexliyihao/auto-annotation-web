@@ -16,8 +16,10 @@
     <!-- Image List -->
     <a href="{% url 'annotations:image-list' %}">Image List</a>
     {% if user.is_authenticated %}
-      <!-- To be finished: User Profile -->
-      <a href="{% url 'annotations:profile'%}">Profile</a>
+      <!-- User Profile -->
+      <a href="{% url 'annotations:profile-self'%}">My Profile</a>
+      <!-- User's organization file -->
+      <a href="{% url 'annotations:organization-view-self'%}">My Organization</a>
       <!-- Image uploading page -->
       <a href="{% url 'annotations:image-upload'%}">Upload Image</a>
     {% else %}
@@ -26,6 +28,8 @@
       <!-- User Registration -->
       <a href="{% url 'annotations:registration'%}">Registration</a>
     {% endif %}
+    <!-- people page -->
+    <a href="{% url 'annotations:people'%}">People</a>
     <!-- Contact Page -->
     <a href="{% url 'annotations:contact'%}">Contact</a>
   </div>

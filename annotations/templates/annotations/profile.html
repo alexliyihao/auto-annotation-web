@@ -1,13 +1,13 @@
 {% extends 'annotations/base.html' %}
 
 {% block header %}
-<title>Profile:{{ username }} - AAAP</title>
+<title>Profile:{{ user.username }} - AAAP</title>
 {% endblock %}
 
 {% block content %}
     <!-- the title part -->
     <div id='title' class='title'>
-      <h1>Profile:{{ username }}</h1>
+      <h1>Profile:{{ user.username }}</h1>
       <div id='login-widget' class='login-widget'>
       {% if user.is_authenticated %}
          <p>Welcome, {{ user.get_username }}.</p>
@@ -25,32 +25,34 @@
     <div id='body' class='body'>
       <table>
         <tr>
-          <td>Username<td>
-          <td>{{ username }}<td>
+          <td><p>Username</p><td>
+          <td><p>{{ user.username }}</p><td>
         </tr>
         <tr>
-          <td>First Name<td>
-          <td>{{ firstname }}<td>
+          <td><p>First Name</p><td>
+          <td><p>{{ user.first_name }}</p><td>
         </tr>
         <tr>
-          <td>Last Name<td>
-          <td>{{ lastname }}<td>
+          <td><p>Last Name</p><td>
+          <td><p>{{ user.last_name }}</p><td>
         </tr>
         <tr>
-          <td>UNI<td>
-          <td>{{ UNI }}<td>
+          <td><p>UNI</p><td>
+          <td><p>{{ user.UNI }}</p><td>
         </tr>
         <tr>
-          <td>Email<td>
-          <td>{{ email }}<td>
+          <td><p>Email</p><td>
+          <td><p>{{ user.email }}</p><td>
         </tr>
         <tr>
-          <td>Organization<td>
-          <td>{{ organization }}<td>
+          <td><p>Organization</p><td>
+          <td><a href="{% url 'annotations:organization-view-others' user.organizations.id %}">
+            {{ user.organizations }}
+          <a><td>
         </tr>
         <tr>
-          <td>Date of Registration<td>
-          <td>{{ register_date }}<td>
+          <td><p>Date of Registration</p><td>
+          <td><p>{{ user.register_date }}</p><td>
         </tr>
       </table>
     </div>
