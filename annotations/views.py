@@ -190,32 +190,32 @@ def image_upload_views(request):
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             # Init a form
-            f = form.save(commit = False)
+            img = form.save(commit = False)
             # save the submission_date
-            f.submission_date = timezone.now()
+            img.submission_date = timezone.now()
             # completely_annotated tag set to false
-            f.completely_annotated = False
+            img.completely_annotated = False
             # translated set to false
-            f.translated = False
+            img.translated = False
             # the user submit the image
-            f.submit_user = User.objects.get(username=request.user.username)
+            img.submit_user = User.objects.get(username=request.user.username)
             # save everything
-            f.save()
+            img.save()
             # This path is subject to change in actual deployment
-            f.svs_path = f"{settings.HOME_PATH}/{settings.SVS_PATH}/{f.image_name}.svs"
-            f.dzi_path = f"{settings.HOME_PATH}/{settings.DZI_PATH}/{f.image_name}.dzi"
+            img.svs_path = f"{settings.HOME_PATH}/{settings.SVS_PATH}/{img.image_name}.svs"
+            img.dzi_path = f"{settings.HOME_PATH}/{settings.DZI_PATH}/{img.image_name}.dzi"
             # openslide has poor support with python3.6+, run from external scripts
             dimensions = subprocess.check_output([
                                     "python3.5",
                                     f"{settings.HOME_PATH}/{settings.EXT_SCRIPT_PATH}/dimensions.py",
-                                    f"{settings.HOME_PATH}/{settings.SVS_PATH}/{f.image_name}.svs"
+                                    f"{settings.HOME_PATH}/{settings.SVS_PATH}/{img.image_name}.svs"
                                     ])
             # interpret the result, the last character is newline character
-            f.width, f.height = eval(dimensions.decode("utf-8")[:-1])
-            f.save()
+            img.width, img.height = eval(dimensions.decode("utf-8")[:-1])
+            img.save()
             # after the file is uploaded, run a translation procedure saving svs into dzis
             # It works internally as long as the server is not interrupted
-            subprocess.Popen(['vips', 'dzsave', f"{f.svs_path}",f'{settings.HOME_PATH}/{settings.DZI_PATH}/{f.image_name}'])
+            subprocess.Popen(['vips', 'dzsave', '{img.svs_path}', '{settings.HOME_PATH}/{settings.DZI_PATH}/{img.image_name};'])
             # TBD: how to update the translated tag later?
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
