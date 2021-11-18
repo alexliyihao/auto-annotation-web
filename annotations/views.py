@@ -48,15 +48,15 @@ def extract_annotation(annotation):
     """
     # This additional id is used for edit and deletions
     W3C_id = annotation['id']
-    # The type of annotation, if there are more than one, it will pike the first one
-    # try is to catch the scenario that the class is no declared
+    # The type of annotation try clause is to catch the scenario that the class is no declared
     try:
-        annotation_class = [info['value'] for info in f.contour["body"] if info['purpose']=='tagging'][0]
+        # This will catch the first tag in the tagging list
+        annotation_class = [info['value'] for info in annotation["body"] if info['purpose']=='tagging'][0]
     except IndexError:
         annotation_class = "Undecided"
     # The description
     # will catch all the comments, if there's no description, it will be ""
-    description = "--".join([info['value'] for info in f.contour["body"] if info['purpose'] =='commenting'])
+    description = "--".join([info['value'] for info in annotation["body"] if info['purpose'] =='commenting'])
 
     return W3C_id, annotation_class, description
 
