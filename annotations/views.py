@@ -119,17 +119,21 @@ def image_views(request, image_id):
             image = Image.objects.get(pk = image_id)
             # Scan the annotation set for the annotation on this image
             # Filter returns a QuerySet object,
-            annotation_query = Annotation.objects.filter(image = image)
             # translate it into array with the Json format
-            annotation_set = json.dumps([i.contour
-                                        for i
-                                        in annotation_query.iterator()
-                                        ])
-            # translate the color each annotations should be by COLOR_MAP
-            annotation_class = json.dumps({i.W3C_id: i.annotation_class
-                                            for i
-                                            in annotation_query.iterator()
-                                            })
+            annotations = json.dumps({
+                annotation_class:[
+                    {
+                    "id":i.W3C_id,
+                    "contour":i.contour
+                    }
+                    for i
+                    in Annotation.objects.filter(
+                        image = image,
+                        annotation_class = annotation_class
+                        ).iterator()
+                    ] for annotation_class in settings.COLOR_MAP.keys()
+                })
+
             # please be noticed that file_path is only for debugging purpose, to be corrected
             # This replace is to workaround the path requirement from models.filepathfield
             return render(
@@ -140,8 +144,7 @@ def image_views(request, image_id):
                             'image_name': image.image_name,
                             'image_path':image.dzi_path.replace(settings.HOME_PATH,""),
                             'filepath':'/dzis/',
-                            'annotation_set': annotation_set,
-                            'annotation_class': annotation_class,
+                            'annotations': annotations,
                             'COLOR_MAP': settings.COLOR_MAP
                         }
                     )

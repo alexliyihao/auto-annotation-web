@@ -36,7 +36,29 @@
   </div>
   <!-- this div is used for debugging, meanwhile tracking the mouse-->
   <div id='body' class='body'>
-  <div id="annotorious-toolbar"></div>
+  <!-- A toolbar listing viewer functionalities -->
+  <button class="openbutton" onclick="openTools()">&#9776; Tools</button>
+  <div id="tool_bar" class="ToolBar">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeTools()">&times;</a>
+      <p>Annotorious Toolbar</p>
+      <div id="annotorious-toolbar"></div>
+      <p>Display:</p>
+      <div class="tool_bar_paint" id="Glomerulus" onclick="render_tool(event)" data="1">
+        <p>Glomerulus</p>
+      </div>
+      <div class="tool_bar_paint" id="Arteries" onclick="render_tool(event)" data="1">
+        <p>Arteries</p>
+      </div>
+      <div class="tool_bar_paint" id="Tubules" onclick="render_tool(event)" data="1">
+        <p>Tubules</p>
+      </div>
+      <div class="tool_bar_paint" id="Interstitium" onclick="render_tool(event)" data="1">
+        <p>Interstitium</p>
+      </div>
+      <div class="tool_bar_paint" id ="Undecided" onclick="render_tool(event)" data="1">
+        <p>Undecided</p>
+      </div>
+  </div>
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
   </div>
@@ -44,6 +66,134 @@
   <!-- scripts -->
 
   <script type="text/javascript">
+
+      /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+      function openTools() {
+        document.getElementById("tool_bar").style.width = "250px";
+      }
+
+      /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+      function closeTools() {
+        document.getElementById("tool_bar").style.width = "0";
+      }
+
+      /**
+       * Color an annotation in OpenSeaDragon viewer, which is identified by <w3c_id> a <color>
+       * @param {string} w3c_id - the w3c_id of this annotation
+       * @param {string} color - the color to be painted
+       */
+      function color_single_annotation(w3c_id, color){
+        // select the g object with the corresponding w3c_id
+        var g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]');
+        // find it's children (2 svg objects)
+        var outer = g_parent.getElementsByClassName("a9s-outer")[0];
+        var inner = g_parent.getElementsByClassName("a9s-inner")[0];
+
+        // change the color into the color needed
+        outer.style.stroke = color;
+        inner.style.stroke = color;
+        inner.style.fill = color;
+      };
+
+      /**
+       * Color the display bar in tool bar standing for <anno_class> in <color>
+       * @param {string} anno_class - the class of annotation
+       * @param {string} color - the color to be painted
+       */
+       function color_indicator_div(anno_class, color){
+         // find the indicator div
+         var indicator_div = document.body.querySelector('.tool_bar_paint[id="'+anno_class+'"]')
+         // color it with <color>
+         indicator_div.style.background = color;
+       };
+
+       /**
+        * Render all the annotation in class <class_name> in <annotations>,
+        * the color is provided by <color_map>
+        * @param {dict} annotations the complete information about annotations
+        * @param {string} class_name - the color to be painted
+        * @param {dict} color_map the one-to-one corresponding of class to color
+        */
+        function render_annotation_by_class(annotations, class_name, color_map){
+          // get all the annotation in this class
+          var anno_details = annotations[class_name];
+          // get all the colors in this class
+          var color = color_map[class_name];
+          // for each <contour> with id <w3c_id>,
+          for ([w3c_id, contour] of Object.entries(anno_details)){
+            // add them into the viewer
+            anno.addAnnotation(contour);
+            // and color it properly
+            color_single_annotation(w3c_id=w3c_id,color=color);
+          };
+        }
+
+      /**
+       * Helper functions of get_class
+       * @param {string} text the input text
+       */
+      function get_tag(text){
+        return text.purpose == "tagging";
+      };
+
+      /**
+       * Get the annotation's class from a w3c annotation
+       * @param {Object} annotation the w3c annotation text
+       */
+      function get_class(annotation){
+        var body = annotation.body.filter(get_tag);
+        return body.value;
+      };
+
+      /**
+       * the function triggered when the indicator_div in tool bar is clicked
+       * if the tool bar is transparent, it will color the toolbar
+       * and render all the annotations in this class
+       * if not, it will hide all the annotations in this class
+       * and remove the background color
+       * @param {event} event the click event on indicator_div
+       */
+      function render_tool(click_event){
+        // get the class to be dealt with
+        var class_name = click_event.target.id;
+        // get the rendered label
+        var rendered = click_event.target.data;
+        // if it's already rendered
+        if(rendered == "1"){
+          // all the related element need to set into "removed"
+          click_event.target.data = "0";
+          // select the whole annotation class will be affected
+          var annotation_affected = {{annotation_class|safe}}.class_name;
+          // get their id
+          var id_affected = $.map(annotation_affected, function(value, key) { return value.id });
+          // delete all the correlated annotation
+          for (w3c_id of id_affected){
+            // this api can take id as inputs
+            anno.removeAnnotation(w3c_id);
+          };
+        } else {
+          // Else it need to be rendered
+          click_event.target.data = "1";
+          render_annotation_by_class(
+            annotations = {{annotations|safe}},
+            class_name = class_name,
+            color_map={{COLOR_MAP|safe}}
+          );
+      }
+
+      /**
+       * the function render all the annotations on the ground,
+       * used only in loading the page
+       */
+      function render_all(){
+        for (class_name of Object.keys({{annotations|safe}})){
+          render_annotation_by_class(
+            annotations = {{annotations|safe}},
+            class_name = class_name,
+            color_map={{COLOR_MAP|safe}}
+          )
+        }
+      }
 
       // Main OpenSeaDragon viewer
       var viewer = OpenSeadragon({
@@ -81,36 +231,23 @@
       Annotorious.SelectorPack(anno);
       //add a toolbar to the openseadragon viewer
       Annotorious.Toolbar(anno, document.getElementById('annotorious-toolbar'));
-      // When a GET request loading the page, load all the annotations on this Image
-      anno.setAnnotations({{ annotation_set|safe }});
 
-      function paint_annotation(w3c_id, anno_class, COLOR_MAP){
-        // select the g object with the corresponding w3c_id
-        var g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]');
-        // find it's children (2 svg objects)
-        var outer = g_parent.getElementsByClassName("a9s-outer")[0];
-        var inner = g_parent.getElementsByClassName("a9s-inner")[0];
-        // calculate the color
-        var color = COLOR_MAP[anno_class];
-        // change the color into the color needed
-        outer.style.stroke = color;
-        inner.style.stroke = color;
-        inner.style.fill = color;
-      };
-      function get_tag(text){
-        return text.purpose == "tagging";
-      };
-      function get_class(annotation){
-        var body = annotation.body.filter(get_tag);
-        return body.value;
-      };
-      // Paint the annotations with different colors
-      for ([w3c_id, anno_class] of Object.entries({{annotation_class|safe}})) {
-        paint_annotation(w3c_id=w3c_id, anno_class=anno_class, COLOR_MAP={{COLOR_MAP|safe}});
-      };
+      render_all()
+      // // Paint the annotations with different colors
+      // for ([anno_class, anno_details] of Object.entries({{annotations|safe}})) {
+      //   // get all the contour in this specific class
+      //   var contour_list = $.map(anno_details, function(value, key) { return value.contour });
+      //   anno.setAnnotations(contour_list);
+      //   var id_list = $.map(anno_details, function(value, key) { return value.id });
+      //   for (w3c_id of id_list) {
+      //     paint_annotation(
+      //     w3c_id=w3c_id,
+      //     anno_class=anno_class,
+      //     COLOR_MAP={{COLOR_MAP|safe}}
+      //     );
+      //   };
+      // };
 
-      // this crsf token is for the POST requests
-      var django_csrf_token = '{{ csrf_token }}';
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {
           $.ajax({
@@ -125,11 +262,6 @@
           }).done(function(annotation){
             console.log(annotation)
         });
-        paint_annotation(
-          w3c_id=annotation.id,
-          anno_class=get_class(annotation),
-          COLOR_MAP={{COLOR_MAP|safe}}
-        );
       });
 
       // this is an attempt deleting the polygon format
@@ -163,11 +295,6 @@
           }).done(function(annotation){
             console.log(annotation)
           });
-          paint_annotation(
-            w3c_id=annotation.id,
-            anno_class=get_class(annotation),
-            COLOR_MAP={{COLOR_MAP|safe}}
-          );
       });
   </script>
 {% endblock %}

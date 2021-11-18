@@ -31,7 +31,7 @@ COLOR_MAP = {
     'Arteries': "yellow",
     'Tubules': 'lightgreen',
     'Interstitium': 'lightblue',
-    'undecided': 'white'
+    'Undecided': 'gray'
 }
 
 ANNNOTATION_CLASS = [('Glomerulus', 'Glomerulus'),

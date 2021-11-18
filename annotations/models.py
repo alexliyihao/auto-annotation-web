@@ -111,7 +111,7 @@ class Image(models.Model):
     # The width of the SVS file
     width = models.PositiveIntegerField(null = True, blank = True)
     # The description to the individual image
-    image_description = models.TextField()
+    image_description = models.TextField(blank = True, null = True)
     # The boolean variable indicate if the image is fully annotated
     completely_annotated = models.BooleanField(default = 'False')
     # The group this image belongs to
@@ -168,6 +168,6 @@ class Annotation(models.Model):
         blank = True
         )
     # The description
-    description = models.TextField(blank = True)
+    description = models.TextField(blank = True, null = True)
     def __str__(self):
        return f"{self.image}_{self.annotator}_{self.update_date}"

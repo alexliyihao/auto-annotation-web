@@ -48,6 +48,7 @@ div#title.title {
   padding-left: 0.25em;
 }
 
+/* SideBar settings */
 /* The sidebar menu */
 .SideBar {
   height: 100%; /* 100% Full-height */
@@ -84,6 +85,58 @@ div#title.title {
   right: 25px;
   font-size: 36px;
   margin-left: 50px;
+}
+
+/* Toolbar settings */
+/* The Toolbar menu */
+.ToolBar {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: absolute; /* let it coordinate with the parent div.body */
+  z-index: 1; /* Stay on top */
+  top: 0;
+  left: 0;
+  background:rgba(255,255,255, 0.3); /* White with high transparency*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.3s; /* 0.3 second transition effect to slide in the sidebar */
+}
+
+/* The sidebar links */
+.ToolBar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 1em;
+  color: black;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.ToolBar a:hover {
+  color: gray;
+}
+
+/* The sidebar links */
+.ToolBar p {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 1em;
+  color: black;
+  display: block;
+  transition: 0.3s;
+}
+
+/* Position and style the close button (top right corner) */
+.ToolBar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.tool_bar_paint {
 }
 
 /* The button used to open the sidebar */
