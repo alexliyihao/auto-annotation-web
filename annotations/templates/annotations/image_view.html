@@ -232,24 +232,10 @@
       Annotorious.BetterPolygon(anno);
       //Add Selector Pack
       Annotorious.SelectorPack(anno);
-      //add a toolbar to the openseadragon viewer
+      //add a toolbar to the toolbar
       Annotorious.Toolbar(anno, document.getElementById('annotorious-toolbar'));
 
       render_all()
-      // // Paint the annotations with different colors
-      // for ([anno_class, anno_details] of Object.entries({{annotations|safe}})) {
-      //   // get all the contour in this specific class
-      //   var contour_list = $.map(anno_details, function(value, key) { return value.contour });
-      //   anno.setAnnotations(contour_list);
-      //   var id_list = $.map(anno_details, function(value, key) { return value.id });
-      //   for (w3c_id of id_list) {
-      //     paint_annotation(
-      //     w3c_id=w3c_id,
-      //     anno_class=anno_class,
-      //     COLOR_MAP={{COLOR_MAP|safe}}
-      //     );
-      //   };
-      // };
 
       // this is an attempt outputting the polygon format
       anno.on('createAnnotation', function(annotation) {
