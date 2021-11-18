@@ -44,19 +44,19 @@
       <div id="annotorious-toolbar"></div>
       <p>Display:</p>
       <div class="tool_bar_paint" id="Glomerulus" onclick="render_tool(event)" data="1">
-        <p>Glomerulus</p>
+        <p id="Glomerulus" data="1">Glomerulus</p>
       </div>
       <div class="tool_bar_paint" id="Arteries" onclick="render_tool(event)" data="1">
-        <p>Arteries</p>
+        <p id="Arteries" data="1">Arteries</p>
       </div>
       <div class="tool_bar_paint" id="Tubules" onclick="render_tool(event)" data="1">
-        <p>Tubules</p>
+        <p id="Tubules", data="1">Tubules</p>
       </div>
       <div class="tool_bar_paint" id="Interstitium" onclick="render_tool(event)" data="1">
-        <p>Interstitium</p>
+        <p id="Interstitium", data="1">Interstitium</p>
       </div>
       <div class="tool_bar_paint" id ="Undecided" onclick="render_tool(event)" data="1">
-        <p>Undecided</p>
+        <p id="Undecided", data="1">Undecided</p>
       </div>
   </div>
   <!-- the div openseadragon-div will take over the whole page -->
@@ -119,13 +119,14 @@
           var anno_details = annotations[class_name];
           // get all the colors in this class
           var color = color_map[class_name];
-          // for each <contour> with id <w3c_id>,
-          for ([w3c_id, contour] of Object.entries(anno_details)){
+          // for each <contour> with id <w3c_id>
+          for (individual_annotation of anno_details){
             // add them into the viewer
-            anno.addAnnotation(contour);
+            anno.addAnnotation(individual_annotation.contour);
             // and color it properly
-            color_single_annotation(w3c_id=w3c_id,color=color);
+            color_single_annotation(w3c_id=individual_annotation.w3c_id,color=color);
           };
+          color_indicator_div(anno_class=class_name, color=color)
         }
 
       /**
@@ -157,28 +158,30 @@
         // get the class to be dealt with
         var class_name = click_event.target.id;
         // get the rendered label
-        var rendered = click_event.target.data;
+        var rendered = click_event.target.getAttribute("data");
         // if it's already rendered
         if(rendered == "1"){
           // all the related element need to set into "removed"
-          click_event.target.data = "0";
+          click_event.target.setAttribute("data","0");
           // select the whole annotation class will be affected
-          var annotation_affected = {{annotation_class|safe}}.class_name;
+          var annotation_affected = {{annotations|safe}}[class_name];
           // get their id
-          var id_affected = $.map(annotation_affected, function(value, key) { return value.id });
+          var id_affected = $.map(annotation_affected, function(value, key) { return value.w3c_id });
           // delete all the correlated annotation
           for (w3c_id of id_affected){
             // this api can take id as inputs
             anno.removeAnnotation(w3c_id);
           };
+          color_indicator_div(anno_class=class_name, color="transparent")
         } else {
           // Else it need to be rendered
-          click_event.target.data = "1";
+          click_event.target.setAttribute('data',"1");
           render_annotation_by_class(
             annotations = {{annotations|safe}},
             class_name = class_name,
             color_map={{COLOR_MAP|safe}}
           );
+        }
       }
 
       /**

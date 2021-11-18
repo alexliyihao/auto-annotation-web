@@ -123,7 +123,7 @@ def image_views(request, image_id):
             annotations = json.dumps({
                 annotation_class:[
                     {
-                    "id":i.W3C_id,
+                    "w3c_id":i.W3C_id,
                     "contour":i.contour
                     }
                     for i
