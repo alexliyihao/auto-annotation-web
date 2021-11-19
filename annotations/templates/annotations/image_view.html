@@ -48,7 +48,7 @@
       <div class="tool_bar_paint_tool" id={{key}}>
         <p class="tool_bar_jump_prev" id={{key}} direction="previous" focus="1" onclick="jump_tool(event)">&#60</p>
         <p class="tool_bar_indicator" id={{key}} rendering="1" onclick="render_tool(event)">
-          {{key}} {{annotations|safe|get_value:key|length}}
+          {{key}} {% if annotations|safe|get_value:key|length == 0%}0{% else %}1/{{annotations|safe|get_value:key|length}}{%endif%}
         </p>
         <p class="tool_bar_jump_next" id={{key}} direction="next" focus="1" onclick="jump_tool(event)">&#62</p>
       </div>
@@ -100,6 +100,20 @@
          var indicator_div = document.body.querySelector('.tool_bar_paint_tool[id="'+anno_class+'"]')
          // color it with <color>
          indicator_div.style.background = color;
+         // find the left and right arrow
+         var left = document.body.querySelector('.tool_bar_jump_prev[id="'+anno_class+'"]')
+         var right = document.body.querySelector('.tool_bar_jump_next[id="'+anno_class+'"]')
+         if (color == "transparent"){
+           left.innerHTML = " ";
+           left.removeAttribute("onclick")
+           right.innerHTML = " ";
+           right.removeAttribute("onclick")
+         } else {
+           left.innerHTML = "<";
+           left.setAttribute("onclick", "jump_tool(event)")
+           right.innerHTML = ">";
+           right.setAttribute("onclick", "jump_tool(event)")
+         }
        };
 
        /**
@@ -119,9 +133,9 @@
             // add them into the viewer
             anno.addAnnotation(individual_annotation.contour);
             // and color it properly
-            color_single_annotation(w3c_id=individual_annotation.w3c_id,color=color);
+            color_single_annotation(w3c_id=individual_annotation.w3c_id,color);
           };
-          color_indicator_div(anno_class=class_name, color=color)
+          color_indicator_div(anno_class=class_name, color)
         }
 
       /**
@@ -151,7 +165,7 @@
        */
       function render_tool(click_event){
         // get the class to be dealt with
-        const class_name = click_event.target.id;
+        var class_name = click_event.target.id;
         // get the rendered label
         var rendered = click_event.target.getAttribute("rendering");
         // if it's already rendered
@@ -186,11 +200,16 @@
        * @param {string} class_name the class to be jumped
        * @param {integer} focus the new focus value
        */
-       function set_focus(class_name, focus){
+       function set_focus(class_name, focus, total){
          document.body.querySelector('.tool_bar_jump_prev[id="'+ class_name +'"]').setAttribute("focus", focus);
          document.body.querySelector('.tool_bar_jump_next[id="'+ class_name +'"]').setAttribute("focus", focus);
+	 document.body.querySelector('.tool_bar_indicator[id="'+ class_name +'"]').innerText = class_name + " " + focus + "/"+ total;
        }
-
+      function jump_to(focus, class_list){
+        anno.panTo(arg = class_list[focus-1]["w3c_id"], immediately = false);
+        // Not quite sure why but fitbounds will jump to some weird place now
+        //anno.fitBounds(arg = class_list[focus-1]["w3c_id"], immediately = false);
+      }
       /**
        * the function triggered when the jump arrow in tool bar is clicked
        * it will jump to the previous/next class annotation based on the "focus"
@@ -201,21 +220,28 @@
         // get the class to be dealt with
         const class_name = click_event.target.id;
         // get the rendered label
-        var focus = click_event.target.getAttribute("focus");
-        // get the direction
-        const direction = click_event.target.getAttribute("direction");
-        if (direction=="previous") {
-          focus = Math.max(1, focus-1);
-          set_focus(class_name, focus);
-          anno.panTo(arg = {{annotations|safe}}[class_name][focus-1]["w3c_id"], immediately = False);
-
-        } else {
-          var class_list = {{annotations|safe}}[class_name];
-          focus = Math.min(focus+1, class_list.length);
-          set_focus(class_name, focus);
-          anno.panTo(arg = class_list[focus-1]["w3c_id"], immediately = False);
+        var focus = Number.parseInt(click_event.target.getAttribute("focus"));
+        // get the annotation in this class
+        var class_list = {{annotations|safe}}[class_name];
+        // when there's no such annotations do nothing
+        if (class_list.length != 0){
+           // if there's more than one, do focus switching
+           if (class_list.length != 1){
+             // get the direction
+             const direction = click_event.target.getAttribute("direction");
+             if (direction=="previous") {
+               focus = Math.max(1, focus-1);
+               set_focus(class_name, focus, total = class_list.length);
+             } else {
+               focus = Math.min(focus+1, class_list.length);
+               set_focus(class_name, focus, total = class_list.length);
+             }
+           }
+           // no matter switch or not, jump to this position
+           // when there's only one, the focus will be 1
+           jump_to(focus, class_list);
         }
-      }
+      }  
       /**
        * the function render all the annotations on the ground,
        * used only in loading the page
