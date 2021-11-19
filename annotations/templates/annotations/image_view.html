@@ -1,5 +1,6 @@
 {% extends 'annotations/base.html' %}
 {% load static %}
+{% load annotations_extra %}
 {% block header %}
     <title>Imageview: {{image_name}} - AAAP</title>
     <!-- OpenSeaDragon Annotorious css -->
@@ -40,24 +41,18 @@
   <button class="openbutton" onclick="openTools()">&#9776; Tools</button>
   <div id="tool_bar" class="ToolBar">
       <a href="javascript:void(0)" class="closebtn" onclick="closeTools()">&times;</a>
-      <p>Annotorious Toolbar</p>
+      <h4>Annotorious Toolbar</h4>
       <div id="annotorious-toolbar"></div>
-      <p>Display:</p>
-      <div class="tool_bar_paint" id="Glomerulus" onclick="render_tool(event)" data="1">
-        <p id="Glomerulus" data="1">Glomerulus</p>
+      <h4>Display:</h4>
+      {% for key,value in COLOR_MAP.items %}
+      <div class="tool_bar_paint_tool" id={{key}}>
+        <p class="tool_bar_jump_prev" id={{key}} direction="previous" focus="1" onclick="jump_tool(event)">&#60</p>
+        <p class="tool_bar_indicator" id={{key}} rendering="1" onclick="render_tool(event)">
+          {{key}} {{annotations|safe|get_value:key|length}}
+        </p>
+        <p class="tool_bar_jump_next" id={{key}} direction="next" focus="1" onclick="jump_tool(event)">&#62</p>
       </div>
-      <div class="tool_bar_paint" id="Arteries" onclick="render_tool(event)" data="1">
-        <p id="Arteries" data="1">Arteries</p>
-      </div>
-      <div class="tool_bar_paint" id="Tubules" onclick="render_tool(event)" data="1">
-        <p id="Tubules", data="1">Tubules</p>
-      </div>
-      <div class="tool_bar_paint" id="Interstitium" onclick="render_tool(event)" data="1">
-        <p id="Interstitium", data="1">Interstitium</p>
-      </div>
-      <div class="tool_bar_paint" id ="Undecided" onclick="render_tool(event)" data="1">
-        <p id="Undecided", data="1">Undecided</p>
-      </div>
+      {% endfor %}
   </div>
   <!-- the div openseadragon-div will take over the whole page -->
   <div id="openseadragon-div"></div>
@@ -69,7 +64,7 @@
 
       /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
       function openTools() {
-        document.getElementById("tool_bar").style.width = "250px";
+        document.getElementById("tool_bar").style.width = "12em";
       }
 
       /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
@@ -84,10 +79,10 @@
        */
       function color_single_annotation(w3c_id, color){
         // select the g object with the corresponding w3c_id
-        var g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]');
+        const g_parent = document.body.querySelector('.a9s-annotation[data-id="'+ w3c_id +'"]');
         // find it's children (2 svg objects)
-        var outer = g_parent.getElementsByClassName("a9s-outer")[0];
-        var inner = g_parent.getElementsByClassName("a9s-inner")[0];
+        const outer = g_parent.getElementsByClassName("a9s-outer")[0];
+        const inner = g_parent.getElementsByClassName("a9s-inner")[0];
 
         // change the color into the color needed
         outer.style.stroke = color;
@@ -102,7 +97,7 @@
        */
        function color_indicator_div(anno_class, color){
          // find the indicator div
-         var indicator_div = document.body.querySelector('.tool_bar_paint[id="'+anno_class+'"]')
+         var indicator_div = document.body.querySelector('.tool_bar_paint_tool[id="'+anno_class+'"]')
          // color it with <color>
          indicator_div.style.background = color;
        };
@@ -116,9 +111,9 @@
         */
         function render_annotation_by_class(annotations, class_name, color_map){
           // get all the annotation in this class
-          var anno_details = annotations[class_name];
+          const anno_details = annotations[class_name];
           // get all the colors in this class
-          var color = color_map[class_name];
+          const color = color_map[class_name];
           // for each <contour> with id <w3c_id>
           for (individual_annotation of anno_details){
             // add them into the viewer
@@ -142,7 +137,7 @@
        * @param {Object} annotation the w3c annotation text
        */
       function get_class(annotation){
-        var body = annotation.body.filter(get_tag);
+        const body = annotation.body.filter(get_tag);
         return body.value;
       };
 
@@ -152,19 +147,19 @@
        * and render all the annotations in this class
        * if not, it will hide all the annotations in this class
        * and remove the background color
-       * @param {event} event the click event on indicator_div
+       * @param {event} click_event the click event on indicator_div
        */
       function render_tool(click_event){
         // get the class to be dealt with
-        var class_name = click_event.target.id;
+        const class_name = click_event.target.id;
         // get the rendered label
-        var rendered = click_event.target.getAttribute("data");
+        var rendered = click_event.target.getAttribute("rendering");
         // if it's already rendered
         if(rendered == "1"){
           // all the related element need to set into "removed"
-          click_event.target.setAttribute("data","0");
+          click_event.target.setAttribute("rendering","0");
           // select the whole annotation class will be affected
-          var annotation_affected = {{annotations|safe}}[class_name];
+          const annotation_affected = {{annotations|safe}}[class_name];
           // get their id
           var id_affected = $.map(annotation_affected, function(value, key) { return value.w3c_id });
           // delete all the correlated annotation
@@ -175,7 +170,7 @@
           color_indicator_div(anno_class=class_name, color="transparent")
         } else {
           // Else it need to be rendered
-          click_event.target.setAttribute('data',"1");
+          click_event.target.setAttribute('rendering',"1");
           render_annotation_by_class(
             annotations = {{annotations|safe}},
             class_name = class_name,
@@ -184,6 +179,43 @@
         }
       }
 
+      /**
+       * the function triggered when the jump arrow in tool bar is clicked
+       * it will jump to the previous/next class annotation based on the "focus"
+       * attribute
+       * @param {string} class_name the class to be jumped
+       * @param {integer} focus the new focus value
+       */
+       function set_focus(class_name, focus){
+         document.body.querySelector('.tool_bar_jump_prev[id="'+ class_name +'"]').setAttribute("focus", focus);
+         document.body.querySelector('.tool_bar_jump_next[id="'+ class_name +'"]').setAttribute("focus", focus);
+       }
+
+      /**
+       * the function triggered when the jump arrow in tool bar is clicked
+       * it will jump to the previous/next class annotation based on the "focus"
+       * attribute
+       * @param {event} click_event the click event on jump arrows
+       */
+      function jump_tool(click_event){
+        // get the class to be dealt with
+        const class_name = click_event.target.id;
+        // get the rendered label
+        var focus = click_event.target.getAttribute("focus");
+        // get the direction
+        const direction = click_event.target.getAttribute("direction");
+        if (direction=="previous") {
+          focus = Math.max(1, focus-1);
+          set_focus(class_name, focus);
+          anno.panTo(arg = {{annotations|safe}}[class_name][focus-1]["w3c_id"], immediately = False);
+
+        } else {
+          var class_list = {{annotations|safe}}[class_name];
+          focus = Math.min(focus+1, class_list.length);
+          set_focus(class_name, focus);
+          anno.panTo(arg = class_list[focus-1]["w3c_id"], immediately = False);
+        }
+      }
       /**
        * the function render all the annotations on the ground,
        * used only in loading the page

@@ -102,28 +102,13 @@ div#title.title {
   transition: 0.3s; /* 0.3 second transition effect to slide in the sidebar */
 }
 
-/* The sidebar links */
-.ToolBar a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 1em;
-  color: black;
-  display: block;
-  transition: 0.3s;
-}
-
-/* When you mouse over the navigation links, change their color */
-.ToolBar a:hover {
-  color: gray;
-}
-
-/* The sidebar links */
+/* The sidebar paragraphs*/
 .ToolBar p {
-  padding: 8px 8px 8px 32px;
+  padding: 4px 4px 4px 4px;
   text-decoration: none;
   font-size: 1em;
   color: black;
-  display: block;
+  display: inline;
   transition: 0.3s;
 }
 
@@ -136,7 +121,43 @@ div#title.title {
   margin-left: 50px;
 }
 
-.tool_bar_paint {
+/* header4, used in the toolbar */
+h4{
+  margin-left: 1em
+}
+div.tool_bar_paint_tool {
+  display: flex;
+  flex-direction: row;
+  flex-flow: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  height:3em;
+}
+p.tool_bar_indicator {
+  margin-block-start:0;
+  margin-block-end: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  text-align: center;
+  flex-grow: 4;
+}
+
+p.tool_bar_jump_prev {
+  margin-block-start:0;
+  margin-block-end: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2em;
+  text-align: center;
+  flex-grow: 0.5;
+}
+
+p.tool_bar_jump_next {
+  margin-block-start:0;
+  margin-block-end: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2em;
+  text-align: center;
+  flex-grow: 0.5;
 }
 
 /* The button used to open the sidebar */

@@ -130,7 +130,7 @@ def image_views(request, image_id):
                     in Annotation.objects.filter(
                         image = image,
                         annotation_class = annotation_class
-                        ).iterator()
+                        ).order_by("pk").iterator()
                     ] for annotation_class in settings.COLOR_MAP.keys()
                 })
 
