@@ -1,5 +1,7 @@
 # auto-annotation-web
 
+## Please note that this repo will be frequently updated for bug fixing or system reworks 
+
 This is a developing repository for an web-based annotation platform, which should be finally integrated with https://github.com/alexliyihao/AAPI_code
 
 Develop environment:
