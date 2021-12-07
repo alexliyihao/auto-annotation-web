@@ -50,6 +50,11 @@ SVS_PATH = 'svss'
 # The path saving all the external scripts, which is right in HOME_PATH
 EXT_SCRIPT_PATH = "ext_script"
 
+# Celery Configuration Options
+CELERY_TIMEZONE = 'America/New_York'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 

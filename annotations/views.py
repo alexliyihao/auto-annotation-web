@@ -15,6 +15,7 @@ import json
 from .models import Image, User, Annotation, Organization, ImageGroup
 from .forms import (UserRegistrationForm, ImageUploadForm,\
                     UserLoginForm, AnnotationCreateform)
+from .tasks import translate
 
 # Views
 class ImageListView(generic.ListView):
@@ -217,9 +218,11 @@ def image_upload_views(request):
             img.width, img.height = eval(dimensions.decode("utf-8")[:-1])
             img.save()
             # after the file is uploaded, run a translation procedure saving svs into dzis
-            # It works internally as long as the server is not interrupted
-            subprocess.Popen(['vips', 'dzsave', '{img.svs_path}', '{settings.HOME_PATH}/{settings.DZI_PATH}/{img.image_name};'])
-            # TBD: how to update the translated tag later?
+            # It works asynchronously with django-celery, 
+            # and the "translated" tag will be automaticallly updated then
+            translate.delay(img_id = img.id, 
+                            svs_path = img.svs_path, 
+                            image_name = img.image_name)
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
             print(form.errors)
