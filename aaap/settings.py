@@ -28,14 +28,14 @@ MEDIA_URL  = '/dzis/'
 # The mapping from class to color rendering on the web page
 COLOR_MAP = {
     "Glomerulus": 'rgba(255,0,0,0.8)',#red
-    'Arteries': 'rgba(255,255,0,0.8)',#yellow
+    'Artery/Arteriole': 'rgba(255,255,0,0.8)',#yellow
     'Tubules': 'rgba(144,238,144,0.8)',#lightgreen
     'Interstitium': 'rgba(173,216,230,0.8)',#lightblue
     'Undecided': 'rgba(128,128,128,0.8)'#grey
 }
 
 ANNNOTATION_CLASS = [('Glomerulus', 'Glomerulus'),
-                     ('Arteries', 'Arteries'),
+                     ('Artery/Arteriole', 'Artery/Arteriole'),
                      ('Tubules', 'Tubules'),
                      ('Interstitium', 'Interstitium'),
                      ('Undecided', 'Undecided')
