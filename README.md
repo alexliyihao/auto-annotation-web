@@ -8,7 +8,13 @@ Develop environment:
 
 - Ubuntu 16.04.7 LTS (From Google cloud platform VM)
 
-Beside django version dependency described in requirement.txt, other dependency including:
+Current Testing browser(subject to updating, as of now Dec.11, 2021):
+
+- Google Chrome 96.0.4664.55
+- Microsoft Edge 96.0.1054.53 will be tested but not as primary concern
+- Safari 15.1 (17612.2.9.1.20) will be tested but not as primary concern
+
+Beside dependency described in requirement.txt, other dependency including:
  
 - 2 python versions needed:
     - python 3.5(for openslide 1.1.2, which can't be run on higher version)
