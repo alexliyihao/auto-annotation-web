@@ -13,9 +13,9 @@ import subprocess
 import json
 
 from .models import Image, User, Annotation, Organization, ImageGroup
-from .forms import (UserRegistrationForm, ImageUploadForm,\
+from .forms import (UserRegistrationForm, ImageUploadForm, ImageBatchUploadForm \
                     UserLoginForm, AnnotationCreateform)
-from .tasks import translate
+from .tasks import translate, get_size
 
 # Views
 class ImageListView(generic.ListView):
@@ -218,10 +218,10 @@ def image_upload_views(request):
             img.width, img.height = eval(dimensions.decode("utf-8")[:-1])
             img.save()
             # after the file is uploaded, run a translation procedure saving svs into dzis
-            # It works asynchronously with django-celery, 
+            # It works asynchronously with django-celery,
             # and the "translated" tag will be automaticallly updated then
-            translate.delay(img_id = img.id, 
-                            svs_path = img.svs_path, 
+            translate.delay(img_id = img.id,
+                            svs_path = img.svs_path,
                             image_name = img.image_name)
             return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
         else:
@@ -230,6 +230,56 @@ def image_upload_views(request):
     else:
         form = ImageUploadForm()
     return render(request, 'annotations/image_upload.html', {'form': form})
+
+def image_batch_upload_views(request):
+    '''
+    The view for page image_upload_batch, for upload a new file
+    '''
+    # A post request is uploading a image
+    if request.method == "POST":
+        for index, _file in enumerate(request.FILES.getlist('file')):
+            request.FILES['file'] = _file
+            form = ImageUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                # Init a form
+                img = form.save(commit = False)
+                # img name
+                if len(request.FILES.getlist('file')) == 1:
+                    img.image_name = img.image_name
+                else:
+                    img.image_name = img.image_name + f"_{index+1}"
+                # save the submission_date
+                img.submission_date = timezone.now()
+                # completely_annotated tag set to false
+                img.completely_annotated = False
+                # translated set to false
+                img.translated = False
+                # the user submit the image
+                img.submit_user = User.objects.get(username=request.user.username)
+                # This path is subject to change in actual deployment
+                img.svs_path = f"{settings.HOME_PATH}/{settings.SVS_PATH}/{img.image_name}.svs"
+                img.dzi_path = f"{settings.HOME_PATH}/{settings.DZI_PATH}/{img.image_name}.dzi"
+                img.save()
+                # after the file is uploaded, run two translation procedures
+                # they work asynchronously on django-celery
+                # 1. measure the size of the image with openslide
+                # the "height" and "width" will be updated then
+                # I really dont want to do this but openslide works horribly with python 3.5+
+                get_size.delay(img_id = img.id,
+                               svs_path = img.svs_path)
+                # 2. saving svs into dzis with dzsave
+                # The "translated" tag will be updated then
+                translate.delay(img_id = img.id,
+                                svs_path = img.svs_path,
+                                image_name = img.image_name)
+                # show a success page
+                return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
+            else:
+                print(form.errors)
+    # when using a get method, render the page
+    else:
+        form = ImageBatchUploadForm()
+        return render(request, 'annotations/image_upload.html', {'form': form})
 
 def image_upload_success_views(request):
     '''
