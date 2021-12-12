@@ -2,7 +2,7 @@
 
 ## Please note that this repo will be frequently updated for bug fixing or system reworks 
 
-This is a developing repository for an web-based annotation platform, which should be finally integrated with https://github.com/alexliyihao/AAPI_code
+This is a developing repository for an web-based annotation platform, which should be finally integrated with https://github.com/alexliyihao/AAPI_code, this project is funded by Columbia Biomedical Informatics Department and supervised by Dr.Sumit Mohan, if you have interest or want to copy the complete version, please email Dr. Mohan at sm2206@cumc.columbia.edu and CC me at yl4326@columbia.edu 
 
 Develop environment:
 
