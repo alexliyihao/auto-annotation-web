@@ -26,7 +26,7 @@ def translate(img_id, svs_path, image_name):
 @shared_task
 def get_size(img_id, svs_path):
     """
-    run a openslide script {settings.HOME_PATH}/{settings.EXT_SCRIPT_PATH}/dimensions.py in python 3.5
+    run a openslide script at {settings.HOME_PATH}/{settings.EXT_SCRIPT_PATH}/dimensions.py in python 3.5
     the addtional arg is the path of svs file {settings.HOME_PATH}/{settings.SVS_PATH}/{image_name}.svs
     then update the image size to the image with img_id
     """

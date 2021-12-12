@@ -13,7 +13,7 @@ import subprocess
 import json
 
 from .models import Image, User, Annotation, Organization, ImageGroup
-from .forms import (UserRegistrationForm, ImageUploadForm, ImageBatchUploadForm \
+from .forms import (UserRegistrationForm, ImageUploadForm, ImageBatchUploadForm, \
                     UserLoginForm, AnnotationCreateform)
 from .tasks import translate, get_size
 
@@ -191,62 +191,19 @@ def image_upload_views(request):
     '''
     # A post request is uploading a image
     if request.method == "POST":
-        form = ImageUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Init a form
-            img = form.save(commit = False)
-            # save the submission_date
-            img.submission_date = timezone.now()
-            # completely_annotated tag set to false
-            img.completely_annotated = False
-            # translated set to false
-            img.translated = False
-            # the user submit the image
-            img.submit_user = User.objects.get(username=request.user.username)
-            # save everything
-            img.save()
-            # This path is subject to change in actual deployment
-            img.svs_path = f"{settings.HOME_PATH}/{settings.SVS_PATH}/{img.image_name}.svs"
-            img.dzi_path = f"{settings.HOME_PATH}/{settings.DZI_PATH}/{img.image_name}.dzi"
-            # openslide has poor support with python3.6+, run from external scripts
-            dimensions = subprocess.check_output([
-                                    "python3.5",
-                                    f"{settings.HOME_PATH}/{settings.EXT_SCRIPT_PATH}/dimensions.py",
-                                    f"{settings.HOME_PATH}/{settings.SVS_PATH}/{img.image_name}.svs"
-                                    ])
-            # interpret the result, the last character is newline character
-            img.width, img.height = eval(dimensions.decode("utf-8")[:-1])
-            img.save()
-            # after the file is uploaded, run a translation procedure saving svs into dzis
-            # It works asynchronously with django-celery,
-            # and the "translated" tag will be automaticallly updated then
-            translate.delay(img_id = img.id,
-                            svs_path = img.svs_path,
-                            image_name = img.image_name)
-            return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
+        if len(request.FILES.getlist("image_upload"))>1:
+            multi_file = True
         else:
-            print(form.errors)
-    # when using a get method, render the page
-    else:
-        form = ImageUploadForm()
-    return render(request, 'annotations/image_upload.html', {'form': form})
-
-def image_batch_upload_views(request):
-    '''
-    The view for page image_upload_batch, for upload a new file
-    '''
-    # A post request is uploading a image
-    if request.method == "POST":
-        for index, _file in enumerate(request.FILES.getlist('file')):
-            request.FILES['file'] = _file
+            multi_file = False
+        for index, _file in enumerate(request.FILES.getlist('image_upload')):
+            request.FILES['image_upload'] = _file
+            print(f"working on file {_file}")
             form = ImageUploadForm(request.POST, request.FILES)
             if form.is_valid():
                 # Init a form
                 img = form.save(commit = False)
                 # img name
-                if len(request.FILES.getlist('file')) == 1:
-                    img.image_name = img.image_name
-                else:
+                if multi_file == True:
                     img.image_name = img.image_name + f"_{index+1}"
                 # save the submission_date
                 img.submission_date = timezone.now()
@@ -272,10 +229,10 @@ def image_batch_upload_views(request):
                 translate.delay(img_id = img.id,
                                 svs_path = img.svs_path,
                                 image_name = img.image_name)
-                # show a success page
-                return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
             else:
                 print(form.errors)
+	# show a success page
+        return HttpResponseRedirect(reverse_lazy('annotations:image-upload-success'))
     # when using a get method, render the page
     else:
         form = ImageBatchUploadForm()

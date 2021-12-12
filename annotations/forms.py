@@ -22,7 +22,8 @@ class ImageUploadForm(forms.ModelForm):
 
 class ImageBatchUploadForm(forms.ModelForm):
     """
-    The form for image uploading by batch
+    The form for image uploading by batch, 
+    this form will NEVER be submitted but as a component of image uploading procedure
     """
     image_upload = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     class Meta:

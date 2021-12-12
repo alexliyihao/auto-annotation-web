@@ -10,7 +10,6 @@ urlpatterns = [
     path('registration/', views.RegistrationView.as_view(), name='registration'),
     path('registration/success/', views.registration_success_views, name="registration-success"),
     path('image_upload/', views.image_upload_views, name='image-upload'),
-    path('image_upload_batch/', views.image_batch_upload_views, name='image-upload-batch'),
     path('image_upload/success/', views.image_upload_success_views, name='image-upload-success'),
     path('login/', views.UserLoginView.as_view(), name = 'login'),
     path('login/success/', views.user_login_success_view, name = 'login-success'),
