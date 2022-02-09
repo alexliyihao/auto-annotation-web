@@ -97,23 +97,23 @@
        */
        function color_indicator_div(anno_class, color){
          // find the indicator div
-         var indicator_div = document.body.querySelector('.tool_bar_paint_tool[id="'+anno_class+'"]')
+         var indicator_div = document.body.querySelector('.tool_bar_paint_tool[id="'+anno_class+'"]');
          // color it with <color>
          indicator_div.style.background = color;
          // find the left and right arrow
-         var left = document.body.querySelector('.tool_bar_jump_prev[id="'+anno_class+'"]')
-         var right = document.body.querySelector('.tool_bar_jump_next[id="'+anno_class+'"]')
+         var left = document.body.querySelector('.tool_bar_jump_prev[id="'+anno_class+'"]');
+         var right = document.body.querySelector('.tool_bar_jump_next[id="'+anno_class+'"]');
          if (color == "transparent"){
            left.innerHTML = " ";
-           left.removeAttribute("onclick")
+           left.removeAttribute("onclick");
            right.innerHTML = " ";
-           right.removeAttribute("onclick")
+           right.removeAttribute("onclick");
          } else {
            left.innerHTML = "<";
-           left.setAttribute("onclick", "jump_tool(event)")
+           left.setAttribute("onclick", "jump_tool(event)");
            right.innerHTML = ">";
-           right.setAttribute("onclick", "jump_tool(event)")
-         }
+           right.setAttribute("onclick", "jump_tool(event)");
+         };
        };
 
        /**
@@ -135,8 +135,8 @@
             // and color it properly
             color_single_annotation(w3c_id=individual_annotation.w3c_id,color);
           };
-          color_indicator_div(anno_class=class_name, color)
-        }
+          color_indicator_div(anno_class=class_name, color);
+        };
 
       /**
        * Helper functions of get_class
@@ -231,7 +231,7 @@
         var height = imagePoint_bottomright.y - imagePoint_topleft.y;
         const newBounds = new OpenSeadragon.Rect(imagePoint_topleft.x, imagePoint_topleft.y, width, height);
         const newBoundsOsd= viewer.viewport.imageToViewportRectangle(newBounds);
-        viewer.viewport.fitBounds(newBoundsOsd);
+        viewer.viewport.fitBounds(newBoundsOsd, immediately = false);
       }
 
       /**
@@ -264,8 +264,9 @@
            // no matter switch or not, jump to this position
            // when there's only one, the focus will be 1
            jump_to(focus, class_list);
-        }
-      }
+        };
+      };
+
       /**
        * the function render all the annotations on the ground,
        * used only in loading the page
@@ -331,9 +332,7 @@
               }),
               datatype: 'json'
           }).done(function(annotation){
-            console.log(annotation)
-            var class = get_class(annotation)
-            {{annotations|safe}}.class.push({"w3c_id":annotation.id, "contour":annotation}])
+            console.log(annotation);
         });
       });
 
@@ -349,7 +348,7 @@
               }),
               datatype: 'json'
           }).done(function(annotation){
-            console.log(annotation)
+            console.log(annotation);
         });
       });
 
@@ -366,7 +365,7 @@
               }),
               datatype: 'json'
           }).done(function(annotation){
-            console.log(annotation)
+            console.log(annotation);
           });
       });
   </script>
