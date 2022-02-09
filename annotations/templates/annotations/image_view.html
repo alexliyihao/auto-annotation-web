@@ -205,7 +205,7 @@
          document.body.querySelector('.tool_bar_jump_next[id="'+ class_name +'"]').setAttribute("focus", focus);
 	 document.body.querySelector('.tool_bar_indicator[id="'+ class_name +'"]').innerText = class_name + " " + focus + "/"+ total;
        }
-      
+
        /**
         * the helper function of jump_tool
         * given the <focus> on <class_list>, pan to this position
@@ -265,7 +265,7 @@
            // when there's only one, the focus will be 1
            jump_to(focus, class_list);
         }
-      }  
+      }
       /**
        * the function render all the annotations on the ground,
        * used only in loading the page
@@ -332,6 +332,8 @@
               datatype: 'json'
           }).done(function(annotation){
             console.log(annotation)
+            var class = get_class(annotation)
+            {{annotations|safe}}.class.push({"w3c_id":annotation.id, "contour":annotation}])
         });
       });
 
