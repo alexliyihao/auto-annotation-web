@@ -1,6 +1,6 @@
 # auto-annotation-web
 
-## Please note that this repo will be frequently updated for bug fixing or system reworks 
+## This project is suspended now - if you feel interested please email Dr. Sumit Mohan at sm2206@cumc.columbia.edu and CC Yihao Li at yl4326@columbia.edu 
 
 
 https://user-images.githubusercontent.com/46059385/149577523-2c5e7cbd-d0cc-491b-bed0-250a0d9ee6f9.mp4
